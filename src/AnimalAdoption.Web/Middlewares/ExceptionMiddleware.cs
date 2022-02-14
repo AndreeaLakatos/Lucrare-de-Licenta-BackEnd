@@ -1,23 +1,16 @@
 ﻿using System;
-using System.Net;
+using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
-using AnimalAdoption.Web.Extentions;
+using AnimalAdoption.BusinessLogic.Exceptions;
+using AnimalAdoption.BusinessLogic.Utils;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace AnimalAdoption.Web.Middlewares
 {
     public class ExceptionMiddleware : IMiddleware
     {
-        private readonly ILogger _logger;
-        private const string _concatenator = ", ";
-
-        public ExceptionMiddleware(ILogger<ExceptionMiddleware> logger)
-        {
-            _logger = logger;
-        }
-
-
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
             try
@@ -32,24 +25,45 @@ namespace AnimalAdoption.Web.Middlewares
 
         private async Task HandleExceptionAsync(HttpContext httpContext, Exception exception)
         {
+            var message = new StringBuilder();
+            message.AppendLine(exception.Message);
+
+            ErrorCode errorCode;
+            int httpStatusCode;
+
+            switch (exception)
+            {
+                // case UserValidationException:
+                //     errorCode = ErrorCode.UserAlreadyExist;
+                //     httpStatusCode = StatusCodes.Status422UnprocessableEntity;
+                //     break;
+                default:
+                    errorCode = ErrorCode.SomethingWentWrong;
+                    httpStatusCode = StatusCodes.Status500InternalServerError;
+                    break;
+            }
+
+            var exceptionErrorCode = Enum.TryParse(exception.Data[StringLiterals.Exceptions.ErrorCodeKey]?.ToString(),
+                out ErrorCode error);
+            if (exceptionErrorCode)
+            {
+                errorCode = error;
+                httpStatusCode = StatusCodes.Status400BadRequest;
+            }
+
             httpContext.Response.ContentType = "application/json";
-            httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+            httpContext.Response.StatusCode = httpStatusCode;
 
-            var message = exception switch
+            var options = new JsonSerializerOptions
             {
-                BadHttpRequestException => exception.Message,
-                WebException => exception.Message,
-                _ => exception.Message
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             };
 
-            var stack = exception switch
-            {
-                BadHttpRequestException => exception.StackTrace,
-                WebException => exception.StackTrace,
-                _ => exception.StackTrace
-            };
+            var errorResponse = new ErrorResponse(errorCode, message.ToString());
 
-            await httpContext.Response.AddErrorMessage(httpContext.Response.StatusCode, message, stack);
+            var response = JsonSerializer.Serialize(errorResponse, options);
+
+            await httpContext.Response.WriteAsync(response);
         }
     }
 }

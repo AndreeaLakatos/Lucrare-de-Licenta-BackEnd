@@ -1,7 +1,9 @@
+using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json;
 using AnimalAdoption.BusinessLogic;
 using AnimalAdoption.Data.Entities;
-using AnimalAdoption.Web.Extentions;
+using AnimalAdoption.Web.Extensions;
 using AnimalAdoption.Web.Services.Account;
 using AnimalAdoption.Web.Services.Token;
 using Microsoft.AspNetCore.Builder;
@@ -62,6 +64,8 @@ namespace AnimalAdoption.Web
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "AnimalAdoption.Web", Version = "v1" });
             });
+
+            services.AddExceptionMiddleware();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -82,6 +86,7 @@ namespace AnimalAdoption.Web
 
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseExceptionMiddleware();
 
             app.UseEndpoints(endpoints =>
             {

@@ -6,9 +6,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 
-namespace AnimalAdoption.Web.Extentions
+namespace AnimalAdoption.Web.Extensions
 {
-    public static class IdentityServerExtentions
+    public static class IdentityServerExtensions
     {
         public static IServiceCollection AddJwtToken(this IServiceCollection services, IConfiguration config)
         {
@@ -37,7 +37,6 @@ namespace AnimalAdoption.Web.Extentions
         {
             var builder = services.AddIdentityCore<BasicUser>(o =>
             {
-                o.Password.RequireDigit = true;
                 o.Password.RequireLowercase = false;
                 o.Password.RequireUppercase = false;
                 o.Password.RequireNonAlphanumeric = false;

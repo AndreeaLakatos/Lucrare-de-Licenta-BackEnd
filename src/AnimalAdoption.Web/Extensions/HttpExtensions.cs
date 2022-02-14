@@ -4,9 +4,9 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using AnimalAdoption.Web.Utils;
 
-namespace AnimalAdoption.Web.Extentions
+namespace AnimalAdoption.Web.Extensions
 {
-    public static class HttpExtentions
+    public static class HttpExtensions
     {
         // public static void AddPaginationHeader(this HttpResponse response, PaginationMetaData paginationMetaData)
         // {

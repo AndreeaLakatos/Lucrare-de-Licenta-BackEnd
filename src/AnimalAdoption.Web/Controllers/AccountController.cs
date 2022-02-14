@@ -11,18 +11,18 @@ namespace AnimalAdoption.Web.Controllers
 {
     public class AccountController : BaseApiController
     {
-        private readonly IAccountService _authenticateService;
+        private readonly IAccountService _accountService;
         private readonly ITokenService _tokenService;
 
-        public AccountController(IAccountService authenticateService, ITokenService tokenService)
+        public AccountController(IAccountService accountService, ITokenService tokenService)
         {
-            _authenticateService = authenticateService;
+            _accountService = accountService;
             _tokenService = tokenService;
         }
 
         [HttpPost]
         [Route("register")]
-        public async Task<ActionResult<BasicUser>> RegisterUser(RegisterUserDto registerUserDto) => Ok(await _authenticateService.Register(registerUserDto));
+        public async Task<ActionResult<BasicUser>> RegisterUser(RegisterUserDto registerUserDto) => Ok(await _accountService.Register(registerUserDto));
 
         [HttpPost]
         [Route("login")]

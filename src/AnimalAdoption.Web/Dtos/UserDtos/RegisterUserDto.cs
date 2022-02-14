@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using AnimalAdoption.Data.Entities.Enums;
 
 namespace AnimalAdoption.Web.Dtos.UserDtos
 {
@@ -18,6 +19,18 @@ namespace AnimalAdoption.Web.Dtos.UserDtos
         [EmailAddress]
         [Required(ErrorMessage = "Email is required")]
         public string Email { get; set; }
+
+        [Required(ErrorMessage = "Phone number is required")]
+        public string PhoneNumber { get; set; }
+
+        [Required(ErrorMessage = "Street is required")]
+        public string Street { get; set; }
+
+        [Required(ErrorMessage = "City is required")]
+        public City City { get; set; }
+
+        [Required(ErrorMessage = "County is required")]
+        public County County { get; set; }
 
         [Required(ErrorMessage = "Password is required")]
         public string Password { get; set; }
