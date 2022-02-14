@@ -35,7 +35,7 @@ namespace AnimalAdoption.Web.Extentions
 
         public static IServiceCollection AddIdentityService(this IServiceCollection services)
         {
-            var builder = services.AddIdentityCore<User>(o =>
+            var builder = services.AddIdentityCore<BasicUser>(o =>
             {
                 o.Password.RequireDigit = true;
                 o.Password.RequireLowercase = false;

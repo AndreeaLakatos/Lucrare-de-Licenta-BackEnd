@@ -1,6 +1,12 @@
+using System.Text.Json;
 using AnimalAdoption.BusinessLogic;
+using AnimalAdoption.Data.Entities;
+using AnimalAdoption.Web.Extentions;
+using AnimalAdoption.Web.Services.Account;
+using AnimalAdoption.Web.Services.Token;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -19,10 +25,38 @@ namespace AnimalAdoption.Web
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddApplicationInsightsTelemetry();
+            services.AddHealthChecks();
+
+            services.AddDbContext<AnimalAdoptionDbContext>(options =>
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("AnimalAdoptionConnectionString"));
+            });
+
+            services.AddRazorPages()
+                .AddJsonOptions(option =>
+                {
+                    option.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+                    option.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
+                });
+
+            services.AddAuthentication();
+            services.AddIdentityService();
+            services.AddJwtToken(Configuration);
+
+            services.AddCors(option =>
+            {
+                option.AddPolicy("EnableCORS", builder =>
+                {
+                    builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+                });
+            });
 
             services.AddControllers();
 
             DiConfig.Configure(services);
+            services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<ITokenService, TokenService>();
 
             services.AddSwaggerGen(c =>
             {
@@ -40,10 +74,13 @@ namespace AnimalAdoption.Web
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "AnimalAdoption.Web v1"));
             }
 
+            app.UseCors("EnableCORS");
+
             app.UseHttpsRedirection();
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
