@@ -8,5 +8,6 @@ namespace AnimalAdoption.Web.Services.Account
     public interface IAccountService
     {
         Task<ActionResult<BasicUser>> Register(RegisterUserDto registerUserDto);
+
     }
 }

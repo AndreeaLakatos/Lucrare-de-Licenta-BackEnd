@@ -39,6 +39,5 @@ namespace AnimalAdoption.Web.Controllers
                 Token = token,
             };
         }
-
     }
 }

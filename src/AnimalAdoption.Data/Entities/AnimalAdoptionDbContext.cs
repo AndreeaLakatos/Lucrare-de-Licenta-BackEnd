@@ -11,15 +11,14 @@ namespace AnimalAdoption.Data.Entities
         {
         }
         public virtual DbSet<BasicUser> BasicUser { get; set; }
+        public virtual DbSet<City> City { get; set; }
+        public virtual DbSet<County> County { get; set; }
+        public virtual DbSet<Address> Address { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfiguration(new UserRoles());
-            foreach (var foreignKey in modelBuilder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
-            {
-                foreignKey.DeleteBehavior = DeleteBehavior.Cascade;
-            }
         }
     }
 }

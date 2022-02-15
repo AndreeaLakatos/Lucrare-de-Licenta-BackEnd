@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using AnimalAdoption.BusinessLogic;
+using AnimalAdoption.BusinessLogic.Helpers;
 using AnimalAdoption.Data.Entities;
 using AnimalAdoption.Web.Extensions;
 using AnimalAdoption.Web.Services.Account;
@@ -55,6 +56,7 @@ namespace AnimalAdoption.Web
             });
 
             services.AddControllers();
+            services.AddAutoMapper(x => x.AddProfile(new AutoMapperHelper()));
 
             DiConfig.Configure(services);
             services.AddScoped<IAccountService, AccountService>();

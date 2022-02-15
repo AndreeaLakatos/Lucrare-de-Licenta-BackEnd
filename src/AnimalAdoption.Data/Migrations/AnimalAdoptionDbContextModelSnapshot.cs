@@ -26,16 +26,20 @@ namespace AnimalAdoption.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("City")
+                    b.Property<int?>("CityId")
                         .HasColumnType("int");
 
-                    b.Property<int>("County")
+                    b.Property<int?>("CountyId")
                         .HasColumnType("int");
 
                     b.Property<string>("Street")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CityId");
+
+                    b.HasIndex("CountyId");
 
                     b.ToTable("Address");
                 });
@@ -116,6 +120,41 @@ namespace AnimalAdoption.Data.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
+            modelBuilder.Entity("AnimalAdoption.Data.Entities.City", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("CountyId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CountyId");
+
+                    b.ToTable("City");
+                });
+
+            modelBuilder.Entity("AnimalAdoption.Data.Entities.County", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("County");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -148,7 +187,7 @@ namespace AnimalAdoption.Data.Migrations
                             Id = "0770c9f0-42a9-485f-a95f-2b36ef3c6614",
                             ConcurrencyStamp = "a0e5628f-5ca7-4599-8d66-ee2782045d56",
                             Name = "BasicUser",
-                            NormalizedName = "USER"
+                            NormalizedName = "BASICUSER"
                         });
                 });
 
@@ -256,14 +295,37 @@ namespace AnimalAdoption.Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("AnimalAdoption.Data.Entities.Address", b =>
+                {
+                    b.HasOne("AnimalAdoption.Data.Entities.City", "City")
+                        .WithMany()
+                        .HasForeignKey("CityId");
+
+                    b.HasOne("AnimalAdoption.Data.Entities.County", "County")
+                        .WithMany()
+                        .HasForeignKey("CountyId");
+
+                    b.Navigation("City");
+
+                    b.Navigation("County");
+                });
+
             modelBuilder.Entity("AnimalAdoption.Data.Entities.BasicUser", b =>
                 {
                     b.HasOne("AnimalAdoption.Data.Entities.Address", "Address")
                         .WithMany()
-                        .HasForeignKey("AddressId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("AddressId");
 
                     b.Navigation("Address");
+                });
+
+            modelBuilder.Entity("AnimalAdoption.Data.Entities.City", b =>
+                {
+                    b.HasOne("AnimalAdoption.Data.Entities.County", "County")
+                        .WithMany()
+                        .HasForeignKey("CountyId");
+
+                    b.Navigation("County");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

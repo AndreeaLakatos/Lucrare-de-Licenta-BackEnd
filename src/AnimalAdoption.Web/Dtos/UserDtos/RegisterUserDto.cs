@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using AnimalAdoption.Data.Entities.Enums;
+using AnimalAdoption.Data.Entities;
 
 namespace AnimalAdoption.Web.Dtos.UserDtos
 {
