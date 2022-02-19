@@ -4,14 +4,16 @@ using AnimalAdoption.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace AnimalAdoption.Data.Migrations
 {
     [DbContext(typeof(AnimalAdoptionDbContext))]
-    partial class AnimalAdoptionDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220217154332_NgoMigration2")]
+    partial class NgoMigration2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -134,9 +136,6 @@ namespace AnimalAdoption.Data.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<int?>("UserPreferencesId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("AddressId");
@@ -148,8 +147,6 @@ namespace AnimalAdoption.Data.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
-
-                    b.HasIndex("UserPreferencesId");
 
                     b.ToTable("AspNetUsers");
                 });
@@ -208,33 +205,6 @@ namespace AnimalAdoption.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Ngo");
-                });
-
-            modelBuilder.Entity("AnimalAdoption.Data.Entities.UserPreferences", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("AnimalSize")
-                        .HasColumnType("int");
-
-                    b.Property<int>("AnimalType")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("HasChildren")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("HasFamily")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("LivingPlace")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("UserPreferences");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -409,13 +379,7 @@ namespace AnimalAdoption.Data.Migrations
                         .WithMany()
                         .HasForeignKey("AddressId");
 
-                    b.HasOne("AnimalAdoption.Data.Entities.UserPreferences", "UserPreferences")
-                        .WithMany()
-                        .HasForeignKey("UserPreferencesId");
-
                     b.Navigation("Address");
-
-                    b.Navigation("UserPreferences");
                 });
 
             modelBuilder.Entity("AnimalAdoption.Data.Entities.City", b =>

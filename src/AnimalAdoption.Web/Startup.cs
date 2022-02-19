@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text.Json;
 using AnimalAdoption.BusinessLogic;
 using AnimalAdoption.BusinessLogic.Helpers;
+using AnimalAdoption.BusinessLogic.Services.Email;
 using AnimalAdoption.Data.Entities;
 using AnimalAdoption.Web.Extensions;
 using AnimalAdoption.Web.Services.Account;
@@ -59,6 +60,7 @@ namespace AnimalAdoption.Web
             services.AddAutoMapper(x => x.AddProfile(new AutoMapperHelper()));
 
             DiConfig.Configure(services);
+            SendEmailConfig.Configure(services, Configuration);
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<ITokenService, TokenService>();
 

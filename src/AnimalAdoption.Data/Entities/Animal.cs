@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AnimalAdoption.Data.Entities
 {
@@ -8,5 +9,9 @@ namespace AnimalAdoption.Data.Entities
         public DateTime BirthDate { get; set; }
         public AnimalType AnimalType { get; set; }
         public AnimalSize AnimalSize { get; set; }
+        public int NgoId { get; set; }
+
+        [ForeignKey("NgoId")]
+        public Ngo Ngo { get; set; }
     }
 }

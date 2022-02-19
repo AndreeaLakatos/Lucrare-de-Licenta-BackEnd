@@ -14,6 +14,8 @@ namespace AnimalAdoption.Data.Entities
         public virtual DbSet<City> City { get; set; }
         public virtual DbSet<County> County { get; set; }
         public virtual DbSet<Address> Address { get; set; }
+        public virtual DbSet<Animal> Animal { get; set; }
+        public virtual DbSet<Ngo> Ngo { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
