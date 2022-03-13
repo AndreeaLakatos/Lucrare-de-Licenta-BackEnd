@@ -6,6 +6,7 @@
         SomethingWentWrong,
         AddUserPreferencesException,
         AddUserException,
-        InvalidUsernameOrPassword
+        InvalidUsernameOrPassword,
+        AddAnimalFailed
     }
 }

@@ -1,5 +1,5 @@
 ﻿using AnimalAdoption.BusinessLogic.Services.Animal;
-using AnimalAdoption.BusinessLogic.Services.Email;
+using AnimalAdoption.BusinessLogic.Services.Ngo;
 using AnimalAdoption.BusinessLogic.Services.Utils;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -11,6 +11,7 @@ namespace AnimalAdoption.BusinessLogic
         {
             serviceCollection.AddScoped<INgoService, NgoService>();
             serviceCollection.AddScoped<IUtilsService, UtilsService>();
+            serviceCollection.AddScoped<IAnimalService, AnimalService>();
         }
     }
 }

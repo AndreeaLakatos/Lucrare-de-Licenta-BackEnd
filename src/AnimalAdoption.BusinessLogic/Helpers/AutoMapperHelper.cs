@@ -11,6 +11,8 @@ namespace AnimalAdoption.BusinessLogic.Helpers
             CreateMap<Address, AddressDto>().ReverseMap();
             CreateMap<City, CityDto>().ReverseMap();
             CreateMap<County, CountyDto>().ReverseMap();
+            CreateMap<Animal, AnimalDto>().ReverseMap();
+            CreateMap<Ngo, NgoDto>().ReverseMap();
         }
     }
 }

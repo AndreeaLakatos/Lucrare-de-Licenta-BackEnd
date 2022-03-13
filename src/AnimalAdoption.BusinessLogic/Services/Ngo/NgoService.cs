@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AnimalAdoption.BusinessLogic.Dtos;
 using AnimalAdoption.Data.Entities;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 
-namespace AnimalAdoption.BusinessLogic.Services.Animal
+namespace AnimalAdoption.BusinessLogic.Services.Ngo
 {
     public class NgoService: INgoService
     {
@@ -17,7 +19,17 @@ namespace AnimalAdoption.BusinessLogic.Services.Animal
             _mapper = mapper;
         }
 
-        public Task<IEnumerable<AnimalDto>> GetAnimals(int ngoId)
+        public async Task<NgoDto> Create(NgoDto ngoDto)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task<IEnumerable<NgoDto>> GetNgos()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task<NgoDto> GetNgo(int ngoId)
         {
             throw new System.NotImplementedException();
         }
