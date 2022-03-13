@@ -10,12 +10,15 @@ namespace AnimalAdoption.Data.Entities
             : base(options)
         {
         }
-        public virtual DbSet<BasicUser> BasicUser { get; set; }
-        public virtual DbSet<City> City { get; set; }
-        public virtual DbSet<County> County { get; set; }
-        public virtual DbSet<Address> Address { get; set; }
-        public virtual DbSet<Animal> Animal { get; set; }
-        public virtual DbSet<Ngo> Ngo { get; set; }
+        public virtual DbSet<BasicUser> BasicUsers { get; set; }
+        public virtual DbSet<UserPreferences> UserPreferencess { get; set; }
+        public virtual DbSet<FosterApplication> FosterApplications { get; set; }
+        public virtual DbSet<Advertisement> Advertisements { get; set; }
+        public virtual DbSet<City> Cities { get; set; }
+        public virtual DbSet<County> Counties { get; set; }
+        public virtual DbSet<Address> Addresses { get; set; }
+        public virtual DbSet<Animal> Animals { get; set; }
+        public virtual DbSet<Ngo> Ngos { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

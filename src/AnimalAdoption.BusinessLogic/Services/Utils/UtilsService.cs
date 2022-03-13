@@ -21,7 +21,7 @@ namespace AnimalAdoption.BusinessLogic.Services.Utils
 
         public async Task<IEnumerable<CityDto>> GetCities(int countyId)
         {
-            var cities = await _dbContext.City.Where(x => x.County.Id == countyId).Include(x => x.County)
+            var cities = await _dbContext.Cities.Where(x => x.County.Id == countyId)
                 .ToListAsync();
             return _mapper.Map<List<CityDto>>(cities);
         }
@@ -29,7 +29,7 @@ namespace AnimalAdoption.BusinessLogic.Services.Utils
         public async Task<IEnumerable<CountyDto>> GetCounties()
         {
             var counties = await _dbContext
-                .County.ToListAsync();
+                .Counties.ToListAsync();
             return _mapper.Map<List<CountyDto>>(counties);
         }
     }

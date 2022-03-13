@@ -3,6 +3,9 @@
     public enum ErrorCode
     {
         UserAlreadyExist = 1,
-        SomethingWentWrong
+        SomethingWentWrong,
+        AddUserPreferencesException,
+        AddUserException,
+        InvalidUsernameOrPassword
     }
 }

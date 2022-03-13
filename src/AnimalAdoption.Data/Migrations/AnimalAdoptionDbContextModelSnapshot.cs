@@ -41,7 +41,36 @@ namespace AnimalAdoption.Data.Migrations
 
                     b.HasIndex("CountyId");
 
-                    b.ToTable("Address");
+                    b.ToTable("Addresses");
+                });
+
+            modelBuilder.Entity("AnimalAdoption.Data.Entities.Advertisement", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("AnimalId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Location")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AnimalId");
+
+                    b.ToTable("Advertisements");
                 });
 
             modelBuilder.Entity("AnimalAdoption.Data.Entities.Animal", b =>
@@ -67,7 +96,7 @@ namespace AnimalAdoption.Data.Migrations
 
                     b.HasIndex("NgoId");
 
-                    b.ToTable("Animal");
+                    b.ToTable("Animals");
                 });
 
             modelBuilder.Entity("AnimalAdoption.Data.Entities.BasicUser", b =>
@@ -171,7 +200,7 @@ namespace AnimalAdoption.Data.Migrations
 
                     b.HasIndex("CountyId");
 
-                    b.ToTable("City");
+                    b.ToTable("Cities");
                 });
 
             modelBuilder.Entity("AnimalAdoption.Data.Entities.County", b =>
@@ -186,7 +215,33 @@ namespace AnimalAdoption.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("County");
+                    b.ToTable("Counties");
+                });
+
+            modelBuilder.Entity("AnimalAdoption.Data.Entities.FosterApplication", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("AdvertisementId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsAdopted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AdvertisementId");
+
+                    b.ToTable("FosterApplications");
                 });
 
             modelBuilder.Entity("AnimalAdoption.Data.Entities.Ngo", b =>
@@ -207,7 +262,7 @@ namespace AnimalAdoption.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Ngo");
+                    b.ToTable("Ngos");
                 });
 
             modelBuilder.Entity("AnimalAdoption.Data.Entities.UserPreferences", b =>
@@ -234,7 +289,7 @@ namespace AnimalAdoption.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("UserPreferences");
+                    b.ToTable("UserPreferencess");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -392,6 +447,15 @@ namespace AnimalAdoption.Data.Migrations
                     b.Navigation("County");
                 });
 
+            modelBuilder.Entity("AnimalAdoption.Data.Entities.Advertisement", b =>
+                {
+                    b.HasOne("AnimalAdoption.Data.Entities.Animal", "Animal")
+                        .WithMany()
+                        .HasForeignKey("AnimalId");
+
+                    b.Navigation("Animal");
+                });
+
             modelBuilder.Entity("AnimalAdoption.Data.Entities.Animal", b =>
                 {
                     b.HasOne("AnimalAdoption.Data.Entities.Ngo", "Ngo")
@@ -425,6 +489,13 @@ namespace AnimalAdoption.Data.Migrations
                         .HasForeignKey("CountyId");
 
                     b.Navigation("County");
+                });
+
+            modelBuilder.Entity("AnimalAdoption.Data.Entities.FosterApplication", b =>
+                {
+                    b.HasOne("AnimalAdoption.Data.Entities.Advertisement", null)
+                        .WithMany("FosterApplication")
+                        .HasForeignKey("AdvertisementId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -476,6 +547,11 @@ namespace AnimalAdoption.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("AnimalAdoption.Data.Entities.Advertisement", b =>
+                {
+                    b.Navigation("FosterApplication");
                 });
 
             modelBuilder.Entity("AnimalAdoption.Data.Entities.Ngo", b =>

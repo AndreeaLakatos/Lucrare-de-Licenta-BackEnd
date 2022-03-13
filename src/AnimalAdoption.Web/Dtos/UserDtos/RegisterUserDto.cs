@@ -26,10 +26,10 @@ namespace AnimalAdoption.Web.Dtos.UserDtos
         [Required(ErrorMessage = "Street is required")]
         public string Street { get; set; }
 
-        [Required(ErrorMessage = "City is required")]
+        [Required(ErrorMessage = "Cities is required")]
         public City City { get; set; }
 
-        [Required(ErrorMessage = "County is required")]
+        [Required(ErrorMessage = "Counties is required")]
         public County County { get; set; }
 
         [Required(ErrorMessage = "Password is required")]
