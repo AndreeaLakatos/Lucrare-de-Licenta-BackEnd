@@ -89,8 +89,8 @@ namespace AnimalAdoption.Data.Migrations
                     b.Property<DateTime>("BirthDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("NgoId")
-                        .HasColumnType("int");
+                    b.Property<string>("NgoId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
@@ -112,6 +112,10 @@ namespace AnimalAdoption.Data.Migrations
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
@@ -141,9 +145,6 @@ namespace AnimalAdoption.Data.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<string>("PasswordCode")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
 
@@ -152,6 +153,9 @@ namespace AnimalAdoption.Data.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("Role")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
@@ -162,9 +166,6 @@ namespace AnimalAdoption.Data.Migrations
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
-
-                    b.Property<int?>("UserPreferencesId")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -178,9 +179,9 @@ namespace AnimalAdoption.Data.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.HasIndex("UserPreferencesId");
-
                     b.ToTable("AspNetUsers");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("BasicUser");
                 });
 
             modelBuilder.Entity("AnimalAdoption.Data.Entities.City", b =>
@@ -244,27 +245,6 @@ namespace AnimalAdoption.Data.Migrations
                     b.ToTable("FosterApplications");
                 });
 
-            modelBuilder.Entity("AnimalAdoption.Data.Entities.Ngo", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Ngos");
-                });
-
             modelBuilder.Entity("AnimalAdoption.Data.Entities.UserPreferences", b =>
                 {
                     b.Property<int>("Id")
@@ -321,10 +301,17 @@ namespace AnimalAdoption.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "0770c9f0-42a9-485f-a95f-2b36ef3c6614",
-                            ConcurrencyStamp = "a0e5628f-5ca7-4599-8d66-ee2782045d56",
+                            Id = "af6a2841-a5ae-4762-a566-9b09ef7b0bfc",
+                            ConcurrencyStamp = "482920b4-1197-48f5-9446-83c2391d9d37",
                             Name = "BasicUser",
                             NormalizedName = "BASICUSER"
+                        },
+                        new
+                        {
+                            Id = "19034e03-fbc4-4c0d-bf99-ce644d83ed5c",
+                            ConcurrencyStamp = "045ee46b-0adf-4f89-a9b6-2b48384a4f31",
+                            Name = "Ngo",
+                            NormalizedName = "NGO"
                         });
                 });
 
@@ -432,6 +419,39 @@ namespace AnimalAdoption.Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("AnimalAdoption.Data.Entities.Ngo", b =>
+                {
+                    b.HasBaseType("AnimalAdoption.Data.Entities.BasicUser");
+
+                    b.Property<string>("Code")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("FoundedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("NgoAddressId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("NgoName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasIndex("NgoAddressId");
+
+                    b.HasDiscriminator().HasValue("Ngo");
+                });
+
+            modelBuilder.Entity("AnimalAdoption.Data.Entities.User", b =>
+                {
+                    b.HasBaseType("AnimalAdoption.Data.Entities.BasicUser");
+
+                    b.Property<int?>("UserPreferencesId")
+                        .HasColumnType("int");
+
+                    b.HasIndex("UserPreferencesId");
+
+                    b.HasDiscriminator().HasValue("User");
+                });
+
             modelBuilder.Entity("AnimalAdoption.Data.Entities.Address", b =>
                 {
                     b.HasOne("AnimalAdoption.Data.Entities.City", "City")
@@ -460,9 +480,7 @@ namespace AnimalAdoption.Data.Migrations
                 {
                     b.HasOne("AnimalAdoption.Data.Entities.Ngo", "Ngo")
                         .WithMany("Animal")
-                        .HasForeignKey("NgoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("NgoId");
 
                     b.Navigation("Ngo");
                 });
@@ -473,13 +491,7 @@ namespace AnimalAdoption.Data.Migrations
                         .WithMany()
                         .HasForeignKey("AddressId");
 
-                    b.HasOne("AnimalAdoption.Data.Entities.UserPreferences", "UserPreferences")
-                        .WithMany()
-                        .HasForeignKey("UserPreferencesId");
-
                     b.Navigation("Address");
-
-                    b.Navigation("UserPreferences");
                 });
 
             modelBuilder.Entity("AnimalAdoption.Data.Entities.City", b =>
@@ -547,6 +559,24 @@ namespace AnimalAdoption.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("AnimalAdoption.Data.Entities.Ngo", b =>
+                {
+                    b.HasOne("AnimalAdoption.Data.Entities.Address", "NgoAddress")
+                        .WithMany()
+                        .HasForeignKey("NgoAddressId");
+
+                    b.Navigation("NgoAddress");
+                });
+
+            modelBuilder.Entity("AnimalAdoption.Data.Entities.User", b =>
+                {
+                    b.HasOne("AnimalAdoption.Data.Entities.UserPreferences", "UserPreferences")
+                        .WithMany()
+                        .HasForeignKey("UserPreferencesId");
+
+                    b.Navigation("UserPreferences");
                 });
 
             modelBuilder.Entity("AnimalAdoption.Data.Entities.Advertisement", b =>

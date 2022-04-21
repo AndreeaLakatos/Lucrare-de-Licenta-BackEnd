@@ -22,7 +22,11 @@ namespace AnimalAdoption.Web.Controllers
 
         [HttpPost]
         [Route("register")]
-        public async Task<ActionResult<BasicUser>> RegisterUser(RegisterUserDto registerUserDto) => Ok(await _accountService.Register(registerUserDto));
+        public async Task<ActionResult<BasicUser>> RegisterUser(RegisterUserDto registerUserDto) => Ok(await _accountService.RegisterBasicUser(registerUserDto));
+
+        [HttpPost]
+        [Route("register-ngo")]
+        public async Task<ActionResult<BasicUser>> RegisterNgo(RegisterNgoDto registerNgoDto) => Ok(await _accountService.RegisterNgo(registerNgoDto));
 
         [HttpPost]
         [Route("login")]
@@ -38,6 +42,20 @@ namespace AnimalAdoption.Web.Controllers
                 Username = loginUserDto.Username,
                 Token = token,
             };
+        }
+
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDto forgotPasswordDto)
+        {
+            await _accountService.ForgotPassword(forgotPasswordDto);
+            return Ok();
+        }
+
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto resetPasswordDto)
+        {
+            await _accountService.ResetPassword(resetPasswordDto);
+            return Ok();
         }
     }
 }

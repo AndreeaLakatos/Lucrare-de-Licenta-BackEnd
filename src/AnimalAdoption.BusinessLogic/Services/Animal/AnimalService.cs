@@ -20,7 +20,7 @@ namespace AnimalAdoption.BusinessLogic.Services.Animal
             _mapper = mapper;
         }
 
-        public async Task<AnimalDto> Create(int ngoId, AnimalDto animalDto)
+        public async Task<AnimalDto> Create(string ngoId, AnimalDto animalDto)
         {
             var ngo = await _dbContext.Ngos.FirstOrDefaultAsync(ngo => ngo.Id == ngoId);
             var animal = _mapper.Map<Data.Entities.Animal>(animalDto);
@@ -34,7 +34,7 @@ namespace AnimalAdoption.BusinessLogic.Services.Animal
             return _mapper.Map<AnimalDto>(animal);
         }
 
-        public async Task<IEnumerable<AnimalDto>> GetNgoAnimals(int ngoId)
+        public async Task<IEnumerable<AnimalDto>> GetNgoAnimals(string ngoId)
         {
             var animals = await _dbContext.Animals.Where(animal => animal.NgoId == ngoId).ToListAsync();
             return _mapper.Map<List<AnimalDto>>(animals);

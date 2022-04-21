@@ -5,7 +5,7 @@ namespace AnimalAdoption.BusinessLogic.Services.Email
 {
     public interface ISendEmailService
     {
-        Task SendForgetPasswordEmail(BasicUser basicUser);
+        Task SendForgetPasswordEmail(BasicUser basicUser, EmailModel emailContent);
         Task SendWelcomeEmail(BasicUser basicUser);
     }
 }

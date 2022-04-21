@@ -7,7 +7,10 @@ namespace AnimalAdoption.Web.Services.Account
 {
     public interface IAccountService
     {
-        Task<ActionResult<BasicUser>> Register(RegisterUserDto registerUserDto);
+        Task<ActionResult<BasicUser>> RegisterBasicUser(RegisterUserDto registerUserDto);
+        Task<ActionResult<BasicUser>> RegisterNgo(RegisterNgoDto registerNgoDto);
+        Task ForgotPassword(ForgotPasswordDto forgotPasswordDto);
+        Task ResetPassword(ResetPasswordDto resetPasswordDto);
 
     }
 }

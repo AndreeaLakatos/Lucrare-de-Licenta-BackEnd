@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 
 namespace AnimalAdoption.Data.Entities
 {
@@ -11,6 +10,7 @@ namespace AnimalAdoption.Data.Entities
         {
         }
         public virtual DbSet<BasicUser> BasicUsers { get; set; }
+        public virtual DbSet<User> AppUsers { get; set; }
         public virtual DbSet<UserPreferences> UserPreferencess { get; set; }
         public virtual DbSet<FosterApplication> FosterApplications { get; set; }
         public virtual DbSet<Advertisement> Advertisements { get; set; }

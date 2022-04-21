@@ -3,17 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.32002.261
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnimalAdoption.Web", "src\AnimalAdoption.Web\AnimalAdoption.Web.csproj", "{56DF5A52-E70B-49C1-901C-573AECFE934E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AnimalAdoption.Web", "src\AnimalAdoption.Web\AnimalAdoption.Web.csproj", "{56DF5A52-E70B-49C1-901C-573AECFE934E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{C5EA70A4-1523-4152-8612-AE6227DFC67B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{BA20E1AE-ADDD-42DE-A923-4A3DE6095811}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnimalAdoption.BusinessLogic", "src\AnimalAdoption.BusinessLogic\AnimalAdoption.BusinessLogic.csproj", "{2B9D8BA4-281D-476B-88C5-2A838BA2F0ED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AnimalAdoption.BusinessLogic", "src\AnimalAdoption.BusinessLogic\AnimalAdoption.BusinessLogic.csproj", "{2B9D8BA4-281D-476B-88C5-2A838BA2F0ED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnimalAdoption.Data", "src\AnimalAdoption.Data\AnimalAdoption.Data.csproj", "{EF7B6569-4943-4CE6-98E0-6FB04F82EBE3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AnimalAdoption.Data", "src\AnimalAdoption.Data\AnimalAdoption.Data.csproj", "{EF7B6569-4943-4CE6-98E0-6FB04F82EBE3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnimalAdoption.Tests", "tests\AnimalAdoption.Tests\AnimalAdoption.Tests.csproj", "{8239B789-780B-4E49-909B-A624F919D938}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AnimalAdoption.Tests", "tests\AnimalAdoption.Tests\AnimalAdoption.Tests.csproj", "{8239B789-780B-4E49-909B-A624F919D938}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

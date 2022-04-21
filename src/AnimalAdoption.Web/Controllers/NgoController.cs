@@ -19,7 +19,7 @@ namespace AnimalAdoption.Web.Controllers
 
         [HttpGet]
         [Route("/{ngoId}")]
-        public async Task<IActionResult> GetNgoAnimals(int ngoId)
+        public async Task<IActionResult> GetNgoAnimals(string ngoId)
         {
             return Ok(await _animalService.GetNgoAnimals(ngoId));
         }

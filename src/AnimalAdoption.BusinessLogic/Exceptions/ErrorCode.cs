@@ -7,6 +7,8 @@
         AddUserPreferencesException,
         AddUserException,
         InvalidUsernameOrPassword,
-        AddAnimalFailed
+        AddAnimalFailed,
+        InvalidEmailAddress,
+        InvalidPassword
     }
 }

@@ -3,12 +3,12 @@ using System.Collections.Generic;
 
 namespace AnimalAdoption.Data.Entities
 {
-    public class Ngo
+    public class Ngo: BasicUser
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
+        public string NgoName { get; set; }
         public string Code { get; set; }
-        public DateTime StartDate { get; set; }
+        public DateTime FoundedDate { get; set; }
+        public Address NgoAddress { get; set; }
         public virtual ICollection<Animal> Animal { get; set; }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using AnimalAdoption.Data.Entities;
-using EllipticCurve.Utils;
 using Microsoft.Extensions.Options;
 using SendGrid;
 using SendGrid.Helpers.Mail;
@@ -15,30 +14,19 @@ namespace AnimalAdoption.BusinessLogic.Services.Email
             Options = emailOptions.Value;
         }
 
-        public async Task SendForgetPasswordEmail(BasicUser basicUser) => await Execute(Options.ApiKey, basicUser, "forget");
+        public async Task SendForgetPasswordEmail(BasicUser basicUser, EmailModel emailContent) => await Execute(Options.ApiKey, basicUser, emailContent);
 
-        public async Task SendWelcomeEmail(BasicUser basicUser) => await Execute(Options.ApiKey, basicUser);
+        public Task SendWelcomeEmail(BasicUser basicUser) => throw new System.NotImplementedException();
 
-        private async Task<Response> Execute(string apiKey, BasicUser basicUser, string type="")
+        private async Task<Response> Execute(string apiKey, BasicUser basicUser, EmailModel emailContent)
         {
             var client = new SendGridClient(apiKey);
-            var templateId = Options.TemplateIdWelcome;
-
-            var dynamicTemplateData = new EmailModel
-            {
-                FirstName = basicUser.FirstName,
-                LastName = basicUser.LastName,
-            };
-            if (type == "forget")
-            {
-                dynamicTemplateData.PasswordCode = basicUser.PasswordCode;
-                templateId = Options.TemplateIdForget;
-            }
+            var templateId = Options.TemplateIdForget;
 
             var from = new EmailAddress(Options.SenderEmail, Options.SenderName);
             var to = new EmailAddress(basicUser.Email);
 
-            var msg = MailHelper.CreateSingleTemplateEmail(from, to, templateId, dynamicTemplateData);
+            var msg = MailHelper.CreateSingleTemplateEmail(from, to, templateId, emailContent);
 
             return await client.SendEmailAsync(msg);
         }

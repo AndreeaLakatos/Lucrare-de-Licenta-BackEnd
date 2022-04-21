@@ -6,7 +6,7 @@ namespace AnimalAdoption.BusinessLogic.Services.Animal
 {
     public interface IAnimalService
     {
-        public Task<AnimalDto> Create(int ngoId, AnimalDto animalDto);
-        public Task<IEnumerable<AnimalDto>> GetNgoAnimals(int ngoId);
+        public Task<AnimalDto> Create(string ngoId, AnimalDto animalDto);
+        public Task<IEnumerable<AnimalDto>> GetNgoAnimals(string ngoId);
     }
 }
