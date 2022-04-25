@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Threading.Tasks;
+using AnimalAdoption.BusinessLogic.Dtos;
 using AnimalAdoption.Data.Entities;
 using AnimalAdoption.Web.Controllers.Base;
 using AnimalAdoption.Web.Dtos.UserDtos;
 using AnimalAdoption.Web.Services.Account;
 using AnimalAdoption.Web.Services.Token;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AnimalAdoption.Web.Controllers
@@ -57,5 +59,48 @@ namespace AnimalAdoption.Web.Controllers
             await _accountService.ResetPassword(resetPasswordDto);
             return Ok();
         }
+
+        [Authorize(Roles = "BasicUser")]
+        [HttpGet("user-details/{username}")]
+        public async Task<IActionResult> GetUserDetails(string username)
+        {
+            return Ok(await _accountService.GetUserDetails(username));
+        }
+
+        [Authorize(Roles = "BasicUser")]
+        [HttpGet("user-preferences/{username}")]
+        public async Task<IActionResult> GetUserPreferences(string username)
+        {
+            return Ok(await _accountService.GetUserPreferences(username));
+        }
+
+        [Authorize(Roles = "Ngo")]
+        [HttpGet("ngo-details/{username}")]
+        public async Task<IActionResult> GetNgoDetails(string username)
+        {
+            return Ok(await _accountService.GetNgoDetails(username));
+        }
+
+        [Authorize(Roles = "BasicUser")]
+        [HttpPost("user-details")]
+        public async Task<IActionResult> SaveUserDetails([FromBody] UserDetailsDto userDetails)
+        {
+            return Ok(await _accountService.SaveUserDetails(userDetails));
+        }
+
+        [Authorize(Roles = "BasicUser")]
+        [HttpPost("user-preferences/{username}")]
+        public async Task<IActionResult> SaveUserPreferences(string username, [FromBody] UserPreferencesDto userPreferences)
+        {
+            return Ok(await _accountService.SaveUserPreferences(username, userPreferences));
+        }
+
+        [Authorize(Roles = "Ngo")]
+        [HttpPost("ngo-details/{username}")]
+        public async Task<IActionResult> SaveNgoDetails(string username, [FromBody] NgoDetailsDto ngoDetails)
+        {
+            return Ok(await _accountService.SaveNgoDetails(username, ngoDetails));
+        }
+
     }
 }

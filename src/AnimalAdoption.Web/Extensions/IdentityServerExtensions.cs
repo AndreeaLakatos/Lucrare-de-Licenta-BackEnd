@@ -28,7 +28,7 @@ namespace AnimalAdoption.Web.Extensions
                         ValidAudience = config["JWT:ValidAudience"],
                         ValidIssuer = config["JWT:ValidIssuer"],
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JWT:Secret"]))
-                    };
+                };
                 });
             return services;
         }

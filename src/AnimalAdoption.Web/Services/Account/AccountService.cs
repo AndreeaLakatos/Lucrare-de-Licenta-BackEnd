@@ -1,15 +1,16 @@
-﻿using System;
-using System.Linq;
+﻿using AnimalAdoption.BusinessLogic.Dtos;
+using AnimalAdoption.BusinessLogic.Exceptions;
+using AnimalAdoption.BusinessLogic.Services.Email;
 using AnimalAdoption.Data.Entities;
 using AnimalAdoption.Web.Dtos.UserDtos;
-using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
-using AnimalAdoption.BusinessLogic.Exceptions;
+using AutoMapper;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using AnimalAdoption.BusinessLogic.Services.Email;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace AnimalAdoption.Web.Services.Account
 {
@@ -18,12 +19,14 @@ namespace AnimalAdoption.Web.Services.Account
         private readonly UserManager<BasicUser> _userManager;
         private readonly AnimalAdoptionDbContext _dbContext;
         private readonly ISendEmailService _sendEmailService;
+        private readonly IMapper _mapper;
 
-        public AccountService(UserManager<BasicUser> userManager, AnimalAdoptionDbContext dbContext, ISendEmailService sendEmailService)
+        public AccountService(UserManager<BasicUser> userManager, AnimalAdoptionDbContext dbContext, ISendEmailService sendEmailService, IMapper mapper)
         {
             _userManager = userManager;
             _dbContext = dbContext;
             _sendEmailService = sendEmailService;
+            _mapper = mapper;
         }
 
         public async Task<ActionResult<BasicUser>> RegisterNgo(RegisterNgoDto registerNgoDto)
@@ -102,9 +105,6 @@ namespace AnimalAdoption.Web.Services.Account
             };
             _dbContext.Addresses.Add(address);
 
-            var userPreferences = new UserPreferences();
-            _dbContext.UserPreferencess.Add(userPreferences);
-
             if (!(await _dbContext.SaveChangesAsync() > 0))
             {
                 throw new AddException(ErrorCode.AddUserPreferencesException, "Invalid user preferences!");
@@ -118,7 +118,7 @@ namespace AnimalAdoption.Web.Services.Account
                 Email = registerUserDto.Email,
                 Address = address,
                 PhoneNumber = registerUserDto.PhoneNumber,
-                UserPreferences = userPreferences
+                UserPreferences = null
             };
 
             var result = await _userManager.CreateAsync(user, registerUserDto.Password);
@@ -164,6 +164,129 @@ namespace AnimalAdoption.Web.Services.Account
             {
                 throw new UserValidationException(ErrorCode.InvalidPassword, "Invalid password");
             }
+        }
+
+        public async Task<UserPreferencesDto> GetUserPreferences(string username)
+        {
+            var user = await _dbContext.AppUsers.Include(x => x.UserPreferences).FirstOrDefaultAsync(user => user.UserName == username);
+            var x =  _mapper.Map<UserPreferencesDto>(user.UserPreferences);
+            return x;
+        }
+
+        public async Task<UserDetailsDto> GetUserDetails(string username)
+        {
+            var user = await _dbContext.AppUsers
+                .Include(x => x.Address).ThenInclude(x => x.City)
+                .Include(x => x.Address).ThenInclude(x => x.County)
+                .FirstOrDefaultAsync(user => user.UserName == username);
+
+            return new UserDetailsDto
+            {
+                UserName = user.UserName,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                County = _mapper.Map<CountyDto>(user.Address.County),
+                City = _mapper.Map<CityDto>(user.Address.City),
+                Street = user.Address.Street
+            };
+        }
+
+        public async Task<UserDetailsDto> SaveUserDetails(UserDetailsDto userDetails)
+        {
+            var user = await _dbContext.AppUsers
+                .Include(x => x.Address).ThenInclude(x => x.County)
+                .Include(x => x.Address).ThenInclude(x => x.City)
+                .FirstOrDefaultAsync(x => x.UserName == userDetails.UserName);
+            var county = await _dbContext.Counties.FirstOrDefaultAsync(x => x.Name == userDetails.County.Name);
+            var city = await _dbContext.Cities.Include(x => x.County).FirstOrDefaultAsync(x => x.Name == userDetails.City.Name && x.County.Name == userDetails.County.Name);
+
+            user.PhoneNumber = userDetails.PhoneNumber;
+            user.Address = new Address
+            {
+                County = county,
+                City = city,
+                Street = userDetails.Street
+            };
+            _dbContext.Addresses.Add(user.Address);
+            user.FirstName = userDetails.FirstName;
+            user.LastName = userDetails.LastName;
+
+            if (!(await _dbContext.SaveChangesAsync() > 0))
+            {
+                throw new AddException(ErrorCode.AddUserPreferencesException, "Invalid user preferences!");
+            }
+
+            return new UserDetailsDto
+            {
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                UserName = user.UserName,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                County = _mapper.Map<CountyDto>(user.Address.County),
+                City = _mapper.Map<CityDto>(user.Address.City),
+                Street = user.Address.Street
+            };
+        }
+
+        public async Task<UserPreferencesDto> SaveUserPreferences(string username, UserPreferencesDto userPreferences)
+        {
+            var userPref = await _dbContext.AppUsers.Include(x => x.UserPreferences).FirstOrDefaultAsync(x => x.UserName == username);
+            userPref.UserPreferences = _mapper.Map<UserPreferences>(userPreferences);
+            if (userPref == null)
+                _dbContext.UserPreferencess.Add(userPref.UserPreferences);
+            if (!(await _dbContext.SaveChangesAsync() > 0))
+            {
+                throw new AddException(ErrorCode.AddUserPreferencesException, "Invalid user preferences!");
+            }
+            return userPreferences;
+
+        }
+
+        public async Task<NgoDetailsDto> GetNgoDetails(string username)
+        {
+            var user = await _dbContext.Ngos
+                .Include(x => x.NgoAddress).ThenInclude(x => x.City)
+                .Include(x => x.NgoAddress).ThenInclude(x => x.County)
+                .FirstOrDefaultAsync(user => user.UserName == username);
+
+            return new NgoDetailsDto
+            {
+                NgoName = user.NgoName,
+                Code = user.Code,
+                NgoCounty = _mapper.Map<CountyDto>(user.NgoAddress.County),
+                NgoCity = _mapper.Map<CityDto>(user.NgoAddress.City),
+                NgoStreet = user.NgoAddress.Street
+            };
+        }
+
+        public async Task<NgoDetailsDto> SaveNgoDetails(string username, NgoDetailsDto ngoDetailsDto)
+        {
+            var ngo = await _dbContext.Ngos
+                .Include(x => x.Address).ThenInclude(x => x.County)
+                .Include(x => x.Address).ThenInclude(x => x.City)
+                .FirstOrDefaultAsync(x => x.UserName == username);
+            var county = await _dbContext.Counties.FirstOrDefaultAsync(x => x.Name == ngoDetailsDto.NgoCounty.Name);
+            var city = await _dbContext.Cities.Include(x => x.County).FirstOrDefaultAsync(x => x.Name == ngoDetailsDto.NgoCity.Name && x.County.Name == ngoDetailsDto.NgoCounty.Name);
+
+            ngo.NgoName = ngoDetailsDto.NgoName;
+            ngo.NgoAddress = new Address
+            {
+                County = county,
+                City = city,
+                Street = ngoDetailsDto.NgoStreet
+            };
+            _dbContext.Addresses.Add(ngo.NgoAddress);
+            ngo.Code = ngoDetailsDto.Code;
+
+            if (!(await _dbContext.SaveChangesAsync() > 0))
+            {
+                throw new AddException(ErrorCode.AddUserPreferencesException, "Invalid user preferences!");
+            }
+
+            return ngoDetailsDto;
         }
     }
 }

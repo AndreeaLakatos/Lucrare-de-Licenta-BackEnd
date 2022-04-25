@@ -34,10 +34,10 @@ namespace AnimalAdoption.Web.Middlewares
 
             switch (exception)
             {
-                // case UserValidationException:
-                //     errorCode = ErrorCode.UserAlreadyExist;
-                //     httpStatusCode = StatusCodes.Status422UnprocessableEntity;
-                //     break;
+                 case UserValidationException:
+                     errorCode = ErrorCode.UserAlreadyExist;
+                     httpStatusCode = StatusCodes.Status422UnprocessableEntity;
+                     break;
                 default:
                     errorCode = ErrorCode.SomethingWentWrong;
                     httpStatusCode = StatusCodes.Status500InternalServerError;

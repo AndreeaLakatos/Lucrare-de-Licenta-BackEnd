@@ -1,10 +1,11 @@
-﻿namespace AnimalAdoption.Data.Entities
+﻿using AnimalAdoption.Data.Entities;
+
+namespace AnimalAdoption.BusinessLogic.Dtos
 {
-    public class UserPreferences
+    public class UserPreferencesDto
     {
-        public int Id { get; set; }
         public bool HasFamily { get; set; }
-        public bool HasChildren { get; set; }
+        public bool HaveChildren { get; set; }
         public string LivingPlace { get; set; }
         public AnimalSize AnimalSize { get; set; }
         public AnimalType AnimalType { get; set; }
