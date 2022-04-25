@@ -60,7 +60,7 @@ namespace AnimalAdoption.Web.Controllers
             return Ok();
         }
 
-        [Authorize(Roles = "BasicUser")]
+        [Authorize(Roles = "BasicUser, Ngo")]
         [HttpGet("user-details/{username}")]
         public async Task<IActionResult> GetUserDetails(string username)
         {

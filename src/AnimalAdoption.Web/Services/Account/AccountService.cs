@@ -175,7 +175,7 @@ namespace AnimalAdoption.Web.Services.Account
 
         public async Task<UserDetailsDto> GetUserDetails(string username)
         {
-            var user = await _dbContext.AppUsers
+            var user = await _dbContext.BasicUsers
                 .Include(x => x.Address).ThenInclude(x => x.City)
                 .Include(x => x.Address).ThenInclude(x => x.County)
                 .FirstOrDefaultAsync(user => user.UserName == username);
