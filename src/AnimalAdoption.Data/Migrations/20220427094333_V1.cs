@@ -127,7 +127,6 @@ namespace AnimalAdoption.Data.Migrations
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     AddressId = table.Column<int>(type: "int", nullable: true),
-                    Role = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     NgoName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Code = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -168,6 +167,30 @@ namespace AnimalAdoption.Data.Migrations
                         name: "FK_AspNetUsers_UserPreferencess_UserPreferencesId",
                         column: x => x.UserPreferencesId,
                         principalTable: "UserPreferencess",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AdoptionAnnouncements",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AnimalType = table.Column<int>(type: "int", nullable: false),
+                    AnimalSize = table.Column<int>(type: "int", nullable: false),
+                    MoreDetails = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NgoId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AdoptionAnnouncements", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AdoptionAnnouncements_AspNetUsers_NgoId",
+                        column: x => x.NgoId,
+                        principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -280,6 +303,27 @@ namespace AnimalAdoption.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Images",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PublicId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Url = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AdoptionAnnouncementId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Images", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Images_AdoptionAnnouncements_AdoptionAnnouncementId",
+                        column: x => x.AdoptionAnnouncementId,
+                        principalTable: "AdoptionAnnouncements",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Advertisements",
                 columns: table => new
                 {
@@ -327,12 +371,12 @@ namespace AnimalAdoption.Data.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "af6a2841-a5ae-4762-a566-9b09ef7b0bfc", "482920b4-1197-48f5-9446-83c2391d9d37", "BasicUser", "BASICUSER" });
+                values: new object[] { "27dd6f7c-efab-43ed-9e42-4f2131f68896", "852490e4-2c00-401a-ba6a-0a5aa97f076a", "BasicUser", "BASICUSER" });
 
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "19034e03-fbc4-4c0d-bf99-ce644d83ed5c", "045ee46b-0adf-4f89-a9b6-2b48384a4f31", "Ngo", "NGO" });
+                values: new object[] { "2d8323c9-c336-41bc-8dd6-464a647841d4", "10a71d9a-5543-47cb-ab06-7281cf260777", "Ngo", "NGO" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Addresses_CityId",
@@ -343,6 +387,11 @@ namespace AnimalAdoption.Data.Migrations
                 name: "IX_Addresses_CountyId",
                 table: "Addresses",
                 column: "CountyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AdoptionAnnouncements_NgoId",
+                table: "AdoptionAnnouncements",
+                column: "NgoId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Advertisements_AnimalId",
@@ -417,6 +466,11 @@ namespace AnimalAdoption.Data.Migrations
                 name: "IX_FosterApplications_AdvertisementId",
                 table: "FosterApplications",
                 column: "AdvertisementId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Images_AdoptionAnnouncementId",
+                table: "Images",
+                column: "AdoptionAnnouncementId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -440,10 +494,16 @@ namespace AnimalAdoption.Data.Migrations
                 name: "FosterApplications");
 
             migrationBuilder.DropTable(
+                name: "Images");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "Advertisements");
+
+            migrationBuilder.DropTable(
+                name: "AdoptionAnnouncements");
 
             migrationBuilder.DropTable(
                 name: "Animals");

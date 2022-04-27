@@ -73,7 +73,8 @@ namespace AnimalAdoption.Web.Services.Account
                 Code = registerNgoDto.Code,
                 NgoAddress = ngoAddress,
                 NgoName = registerNgoDto.NgoName,
-                FoundedDate = registerNgoDto.FoundedDate
+                FoundedDate = registerNgoDto.FoundedDate,
+                AdoptionAnnouncements = new List<AdoptionAnnouncement>()
             };
 
             var result = await _userManager.CreateAsync(user, registerNgoDto.Password);

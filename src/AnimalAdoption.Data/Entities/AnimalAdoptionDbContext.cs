@@ -10,6 +10,8 @@ namespace AnimalAdoption.Data.Entities
         {
         }
         public virtual DbSet<BasicUser> BasicUsers { get; set; }
+        public virtual DbSet<Photo> Photos { get; set; }
+        public virtual DbSet<AdoptionAnnouncement> AdoptionAnnouncements { get; set; } 
         public virtual DbSet<User> AppUsers { get; set; }
         public virtual DbSet<UserPreferences> UserPreferencess { get; set; }
         public virtual DbSet<FosterApplication> FosterApplications { get; set; }

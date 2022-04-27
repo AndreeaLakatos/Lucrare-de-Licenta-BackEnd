@@ -2,6 +2,7 @@ using System.Text.Json;
 using AnimalAdoption.BusinessLogic;
 using AnimalAdoption.BusinessLogic.Helpers;
 using AnimalAdoption.BusinessLogic.Services.Email;
+using AnimalAdoption.BusinessLogic.Services.Image;
 using AnimalAdoption.Data.Entities;
 using AnimalAdoption.Web.Extensions;
 using AnimalAdoption.Web.Services.Account;
@@ -41,6 +42,10 @@ namespace AnimalAdoption.Web
                     option.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
                     option.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
                 });
+            services.AddControllersWithViews()
+                .AddNewtonsoftJson(options =>
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            );
 
             services.AddAuthentication();
             services.AddIdentityService();
@@ -59,6 +64,7 @@ namespace AnimalAdoption.Web
 
             DiConfig.Configure(services);
             SendEmailConfig.Configure(services, Configuration);
+            ImageConfig.Configure(services, Configuration);
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<ITokenService, TokenService>();
 

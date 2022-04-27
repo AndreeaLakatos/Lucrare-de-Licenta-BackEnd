@@ -9,6 +9,6 @@ namespace AnimalAdoption.Data.Entities
         public string Code { get; set; }
         public DateTime FoundedDate { get; set; }
         public Address NgoAddress { get; set; }
-        public virtual ICollection<Animal> Animal { get; set; }
+        public virtual ICollection<AdoptionAnnouncement> AdoptionAnnouncements { get; set; }
     }
 }
