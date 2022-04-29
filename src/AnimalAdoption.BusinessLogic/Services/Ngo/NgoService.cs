@@ -33,14 +33,32 @@ namespace AnimalAdoption.BusinessLogic.Services.Ngo
         public async Task<PhotoDto> AddImage(int adoptionAdId, PhotoDto image)
         {
             var adoptionAnnouncement = await _dbContext.AdoptionAnnouncements
-                .Include(x => x.Images)
+                .Include(x => x.Photos)
                 .FirstOrDefaultAsync(x => x.Id == adoptionAdId);
             if (adoptionAnnouncement == null) throw new Exception();
 
             var imageN = _mapper.Map<Photo>(image);
-            adoptionAnnouncement.Images.Add(imageN);
+            adoptionAnnouncement.Photos.Add(imageN);
             await _dbContext.SaveChangesAsync();
             return _mapper.Map<PhotoDto>(imageN);
+        }
+
+        public async Task<IEnumerable<AdoptionAnnouncementListModelDto>> GetUserAdoptionAnnouncements(GetAdoptionAnnouncementsDto username)
+        {
+            var ngo = await _dbContext.Ngos
+                .Include(x => x.AdoptionAnnouncements).ThenInclude(x => x.Photos)
+                .Include(x => x.NgoAddress).ThenInclude(x => x.County)
+                .Include(x => x.NgoAddress).ThenInclude(x => x.City)
+                .FirstOrDefaultAsync(x => x.UserName == username.Username);
+
+            var announcements = _mapper.Map<AdoptionAnnouncementListModelDto[]>(ngo.AdoptionAnnouncements);
+            foreach (var announcement in announcements)
+            {
+                announcement.County = _mapper.Map<CountyDto>(ngo.NgoAddress.County);
+                announcement.City = _mapper.Map<CityDto>(ngo.NgoAddress.City);
+                announcement.Street = ngo.NgoAddress.Street;
+            }
+            return announcements;
         }
 
         public Task<IEnumerable<NgoDto>> GetNgos()

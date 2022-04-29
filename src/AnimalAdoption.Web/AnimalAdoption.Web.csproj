@@ -21,4 +21,8 @@
     <ProjectReference Include="..\AnimalAdoption.BusinessLogic\AnimalAdoption.BusinessLogic.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Dtos\NgoDtos\" />
+  </ItemGroup>
+
 </Project>

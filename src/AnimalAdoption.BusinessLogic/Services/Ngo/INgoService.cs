@@ -10,5 +10,6 @@ namespace AnimalAdoption.BusinessLogic.Services.Ngo
         public Task<IEnumerable<NgoDto>> GetNgos();
         public Task<NgoDto> GetNgo(int ngoId);
         public Task<PhotoDto> AddImage(int adoptionAdId, PhotoDto image);
+        public Task<IEnumerable<AdoptionAnnouncementListModelDto>> GetUserAdoptionAnnouncements(GetAdoptionAnnouncementsDto username);
     }
 }
