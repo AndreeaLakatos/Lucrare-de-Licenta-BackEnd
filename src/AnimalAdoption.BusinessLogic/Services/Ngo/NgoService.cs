@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AnimalAdoption.BusinessLogic.Dtos;
 using AnimalAdoption.Data.Entities;
@@ -30,7 +32,7 @@ namespace AnimalAdoption.BusinessLogic.Services.Ngo
             return _mapper.Map<AdoptionAnnouncementDto>(adoptionAd);
         }
 
-        public async Task<PhotoDto> AddImage(int adoptionAdId, PhotoDto image)
+        public async Task<PhotoDto> AddAdoptionImage(int adoptionAdId, PhotoDto image)
         {
             var adoptionAnnouncement = await _dbContext.AdoptionAnnouncements
                 .Include(x => x.Photos)
@@ -43,13 +45,15 @@ namespace AnimalAdoption.BusinessLogic.Services.Ngo
             return _mapper.Map<PhotoDto>(imageN);
         }
 
-        public async Task<IEnumerable<AdoptionAnnouncementListModelDto>> GetUserAdoptionAnnouncements(GetAdoptionAnnouncementsDto username)
+        public async Task<IEnumerable<AdoptionAnnouncementListModelDto>> GetUserAdoptionAnnouncements(GetAnnouncementsDto username)
         {
             var ngo = await _dbContext.Ngos
                 .Include(x => x.AdoptionAnnouncements).ThenInclude(x => x.Photos)
                 .Include(x => x.NgoAddress).ThenInclude(x => x.County)
                 .Include(x => x.NgoAddress).ThenInclude(x => x.City)
                 .FirstOrDefaultAsync(x => x.UserName == username.Username);
+
+            if (ngo.AdoptionAnnouncements == null) return Enumerable.Empty<AdoptionAnnouncementListModelDto>(); 
 
             var announcements = _mapper.Map<AdoptionAnnouncementListModelDto[]>(ngo.AdoptionAnnouncements);
             foreach (var announcement in announcements)
@@ -61,14 +65,48 @@ namespace AnimalAdoption.BusinessLogic.Services.Ngo
             return announcements;
         }
 
-        public Task<IEnumerable<NgoDto>> GetNgos()
+        public async Task<FosteringAnnouncementDto> AddFosteringAnnouncement(string username, FosteringAnnouncementDto fosteringAnnouncement)
         {
-            throw new System.NotImplementedException();
+            var ngo = await _dbContext.Ngos.Include(x => x.FosteringAnnouncements).FirstOrDefaultAsync(x => x.UserName == username);
+            if (ngo == null) throw new Exception();
+
+            var fosteringAd = _mapper.Map<FosteringAnnouncement>(fosteringAnnouncement);
+            ngo.FosteringAnnouncements.Add(fosteringAd);
+            await _dbContext.SaveChangesAsync();
+            return _mapper.Map<FosteringAnnouncementDto>(fosteringAd);
         }
 
-        public Task<NgoDto> GetNgo(int ngoId)
+        public async Task<PhotoDto> AddFosteringImage(int fosteringAdId, PhotoDto image)
         {
-            throw new System.NotImplementedException();
+            var fosteringAnnouncement = await _dbContext.FosteringAnnouncements
+                .Include(x => x.Photos)
+                .FirstOrDefaultAsync(x => x.Id == fosteringAdId);
+            if (fosteringAnnouncement == null) throw new Exception();
+
+            var imageN = _mapper.Map<Photo>(image);
+            fosteringAnnouncement.Photos.Add(imageN);
+            await _dbContext.SaveChangesAsync();
+            return _mapper.Map<PhotoDto>(imageN);
+        }
+
+        public async Task<IEnumerable<FosteringAnnouncementListModelDto>> GetUserFosteringAnnouncements(GetAnnouncementsDto username)
+        {
+            var ngo = await _dbContext.Ngos
+                .Include(x => x.FosteringAnnouncements).ThenInclude(x => x.Photos)
+                .Include(x => x.NgoAddress).ThenInclude(x => x.County)
+                .Include(x => x.NgoAddress).ThenInclude(x => x.City)
+                .FirstOrDefaultAsync(x => x.UserName == username.Username);
+
+            if (ngo.FosteringAnnouncements == null) return Enumerable.Empty<FosteringAnnouncementListModelDto>();
+
+            var announcements = _mapper.Map<FosteringAnnouncementListModelDto[]>(ngo.FosteringAnnouncements);
+            foreach (var announcement in announcements)
+            {
+                announcement.County = _mapper.Map<CountyDto>(ngo.NgoAddress.County);
+                announcement.City = _mapper.Map<CityDto>(ngo.NgoAddress.City);
+                announcement.Street = ngo.NgoAddress.Street;
+            }
+            return announcements;
         }
     }
 }

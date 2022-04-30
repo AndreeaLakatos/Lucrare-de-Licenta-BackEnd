@@ -20,7 +20,7 @@ namespace AnimalAdoption.Web.Controllers
         }
 
         [HttpPost("adoption-announcements")]
-        public async Task<IActionResult> GetUserAdoptionAnnouncements([FromBody] GetAdoptionAnnouncementsDto username)
+        public async Task<IActionResult> GetUserAdoptionAnnouncements([FromBody] GetAnnouncementsDto username)
         {
             return Ok(await _ngoService.GetUserAdoptionAnnouncements(username));
         }
@@ -33,7 +33,7 @@ namespace AnimalAdoption.Web.Controllers
         }
 
         [HttpPost("adoption-announcement/{announcementId}"), RequestSizeLimit(100_000_000)]
-        public async Task<IActionResult> UploadAnnouncementImage(int announcementId)
+        public async Task<IActionResult> UploadAdoptionAnnouncementImage(int announcementId)
         {
             var formCollection = await Request.ReadFormAsync();
             var file = formCollection.Files.First();
@@ -44,7 +44,35 @@ namespace AnimalAdoption.Web.Controllers
                 PublicId = uploadResult.PublicId
             };
 
-            return Ok(await _ngoService.AddImage(announcementId, imageDto));
+            return Ok(await _ngoService.AddFosteringImage(announcementId, imageDto));
+        }
+
+        [HttpPost("fostering-announcements")]
+        public async Task<IActionResult> GetUserFosteringAnnouncements([FromBody] GetAnnouncementsDto username)
+        {
+            return Ok(await _ngoService.GetUserFosteringAnnouncements(username));
+        }
+
+        [HttpPost]
+        [Route("fostering-announcement")]
+        public async Task<IActionResult> CreateFosteringAnnouncement([FromBody] FosteringAnnouncementDto fosteringAnnouncement)
+        {
+            return Ok(await _ngoService.AddFosteringAnnouncement(fosteringAnnouncement.Username, fosteringAnnouncement));
+        }
+
+        [HttpPost("fostering-announcement/{announcementId}"), RequestSizeLimit(100_000_000)]
+        public async Task<IActionResult> UploadFosteringAnnouncementImage(int announcementId)
+        {
+            var formCollection = await Request.ReadFormAsync();
+            var file = formCollection.Files.First();
+            var uploadResult = await _imageService.SaveImageInCloudAsync(file);
+            var imageDto = new PhotoDto
+            {
+                Url = uploadResult.SecureUrl.AbsoluteUri,
+                PublicId = uploadResult.PublicId
+            };
+
+            return Ok(await _ngoService.AddFosteringImage(announcementId, imageDto));
         }
     }
 }

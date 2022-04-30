@@ -7,9 +7,10 @@ namespace AnimalAdoption.BusinessLogic.Services.Ngo
     public interface INgoService
     {
         public Task<AdoptionAnnouncementDto> AddAdoptionAnnouncement(string username, AdoptionAnnouncementDto adoptionAnnouncement);
-        public Task<IEnumerable<NgoDto>> GetNgos();
-        public Task<NgoDto> GetNgo(int ngoId);
-        public Task<PhotoDto> AddImage(int adoptionAdId, PhotoDto image);
-        public Task<IEnumerable<AdoptionAnnouncementListModelDto>> GetUserAdoptionAnnouncements(GetAdoptionAnnouncementsDto username);
+        public Task<FosteringAnnouncementDto> AddFosteringAnnouncement(string username, FosteringAnnouncementDto adoptionAnnouncement);
+        public Task<PhotoDto> AddAdoptionImage(int adoptionAdId, PhotoDto image);
+        public Task<IEnumerable<AdoptionAnnouncementListModelDto>> GetUserAdoptionAnnouncements(GetAnnouncementsDto username);
+        public Task<PhotoDto> AddFosteringImage(int fostyeringAdId, PhotoDto image);
+        public Task<IEnumerable<FosteringAnnouncementListModelDto>> GetUserFosteringAnnouncements(GetAnnouncementsDto username);
     }
 }

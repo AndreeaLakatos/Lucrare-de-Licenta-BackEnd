@@ -1,6 +1,6 @@
 ﻿namespace AnimalAdoption.BusinessLogic.Dtos
 {
-    public class GetAdoptionAnnouncementsDto
+    public class GetAnnouncementsDto
     {
         public string Username { get; set; }
     }

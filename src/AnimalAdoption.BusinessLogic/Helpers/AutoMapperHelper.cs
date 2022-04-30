@@ -16,6 +16,8 @@ namespace AnimalAdoption.BusinessLogic.Helpers
             CreateMap<UserPreferences, UserPreferencesDto>().ReverseMap();
             CreateMap<AdoptionAnnouncement, AdoptionAnnouncementDto>().ReverseMap();
             CreateMap<AdoptionAnnouncement, AdoptionAnnouncementListModelDto>().ReverseMap();
+            CreateMap<FosteringAnnouncement, FosteringAnnouncementDto>().ReverseMap();
+            CreateMap<FosteringAnnouncement, FosteringAnnouncementListModelDto>().ReverseMap();
             CreateMap<Photo, PhotoDto>().ReverseMap();
         }
     }
