@@ -10,6 +10,7 @@ namespace AnimalAdoption.BusinessLogic.Dtos
         public AnimalType AnimalType { get; set; }
         public AnimalSize AnimalSize { get; set; }
         public string MoreDetails { get; set; }
+        public bool Status { get; set; }
         public string Username { get; set; }
     }
 }

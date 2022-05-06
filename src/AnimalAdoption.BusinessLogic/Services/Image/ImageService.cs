@@ -34,7 +34,7 @@ namespace AnimalAdoption.BusinessLogic.Services.Image
             var uploadParams = new ImageUploadParams
             {
                 File = new FileDescription(fileImage.FileName, fileImage.OpenReadStream()),
-                Transformation = new Transformation().Width(700).Height(500).Crop("fill").Gravity("face")
+                Transformation = new Transformation().Width(700).Height(400)
             };
 
             var uploadResult = await _cloudinary.UploadAsync(uploadParams);

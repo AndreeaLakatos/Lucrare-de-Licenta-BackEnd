@@ -12,5 +12,11 @@ namespace AnimalAdoption.BusinessLogic.Services.Ngo
         public Task<IEnumerable<AdoptionAnnouncementListModelDto>> GetUserAdoptionAnnouncements(GetAnnouncementsDto username);
         public Task<PhotoDto> AddFosteringImage(int fostyeringAdId, PhotoDto image);
         public Task<IEnumerable<FosteringAnnouncementListModelDto>> GetUserFosteringAnnouncements(GetAnnouncementsDto username);
+        Task<int> DeleteAdoptionAnnouncement(string username, int adoptionAnnouncementId);
+        Task<int> DeleteFosteringAnnouncement(string username, int fosteringAnnouncementId);
+        Task<AdoptionRequestDto> AddAdoptionRequest(AdoptionRequestDto adoptionRequest);
+        Task<FosteringRequestDto> AddFosteringRequest(FosteringRequestDto fosteringRequest);
+        Task<List<AdoptionRequestListModelDto>> GetAdoptionRequests(int announcementId);
+        Task<List<FosteringRequestListModelDto>> GetFosteringRequests(int announcementId);
     }
 }

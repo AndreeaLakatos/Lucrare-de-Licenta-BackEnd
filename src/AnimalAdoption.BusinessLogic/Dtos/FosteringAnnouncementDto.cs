@@ -13,6 +13,7 @@ namespace AnimalAdoption.BusinessLogic.Dtos
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public string MoreDetails { get; set; }
+        public bool Status { get; set; }
         public string Username { get; set; }
     }
 }

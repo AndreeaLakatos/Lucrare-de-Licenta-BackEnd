@@ -15,13 +15,12 @@ namespace AnimalAdoption.Data.Entities
         public virtual DbSet<FosteringAnnouncement> FosteringAnnouncements { get; set; }
         public virtual DbSet<User> AppUsers { get; set; }
         public virtual DbSet<UserPreferences> UserPreferencess { get; set; }
-        public virtual DbSet<FosterApplication> FosterApplications { get; set; }
-        public virtual DbSet<Advertisement> Advertisements { get; set; }
         public virtual DbSet<City> Cities { get; set; }
         public virtual DbSet<County> Counties { get; set; }
         public virtual DbSet<Address> Addresses { get; set; }
-        public virtual DbSet<Animal> Animals { get; set; }
         public virtual DbSet<Ngo> Ngos { get; set; }
+        public virtual DbSet<AdoptionRequest> AdoptionRequests { get; set; }
+        public virtual DbSet<FosteringRequest> FosteringRequests { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

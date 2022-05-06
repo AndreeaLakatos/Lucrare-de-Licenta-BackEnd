@@ -4,14 +4,16 @@ using AnimalAdoption.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace AnimalAdoption.Data.Migrations
 {
     [DbContext(typeof(AnimalAdoptionDbContext))]
-    partial class AnimalAdoptionDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220506102050_V9")]
+    partial class V9
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -103,9 +105,6 @@ namespace AnimalAdoption.Data.Migrations
 
                     b.Property<bool>("Status")
                         .HasColumnType("bit");
-
-                    b.Property<string>("Username")
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -299,9 +298,6 @@ namespace AnimalAdoption.Data.Migrations
                     b.Property<bool>("Status")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Username")
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("BasicUserId");
@@ -395,15 +391,15 @@ namespace AnimalAdoption.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "0d9b0c54-42cd-422a-946f-fda045ccfc72",
-                            ConcurrencyStamp = "208dae2f-8111-4a50-a631-7ee3c09a6fe6",
+                            Id = "9aa076f1-fbbe-4cde-9329-0e91391c8e3e",
+                            ConcurrencyStamp = "684ab5ea-4c5a-430a-bf0b-ba93f006b4da",
                             Name = "BasicUser",
                             NormalizedName = "BASICUSER"
                         },
                         new
                         {
-                            Id = "87e17198-0963-4df7-b1df-ad96f4e9e516",
-                            ConcurrencyStamp = "fe6116d1-c002-4f05-bfca-dd76b188893d",
+                            Id = "458f8460-109d-40ec-94d5-54dd6b637595",
+                            ConcurrencyStamp = "ea8d442e-91c0-498d-8984-f11264ff58d9",
                             Name = "Ngo",
                             NormalizedName = "NGO"
                         });

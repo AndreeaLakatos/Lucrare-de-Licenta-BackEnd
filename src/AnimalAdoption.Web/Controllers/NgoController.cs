@@ -44,7 +44,7 @@ namespace AnimalAdoption.Web.Controllers
                 PublicId = uploadResult.PublicId
             };
 
-            return Ok(await _ngoService.AddFosteringImage(announcementId, imageDto));
+            return Ok(await _ngoService.AddAdoptionImage(announcementId, imageDto));
         }
 
         [HttpPost("fostering-announcements")]
@@ -73,6 +73,42 @@ namespace AnimalAdoption.Web.Controllers
             };
 
             return Ok(await _ngoService.AddFosteringImage(announcementId, imageDto));
+        }
+
+        [HttpDelete("adoption-announcement/{announcementId}/{username}")]
+        public async Task<IActionResult> DeleteAdoptionAnnouncement(int announcementId, string username)
+        {
+            return Ok(await _ngoService.DeleteAdoptionAnnouncement(username, announcementId));
+        }
+
+        [HttpDelete("fostering-announcement/{announcementId}/{username}")]
+        public async Task<IActionResult> DeleteFosteringAnnouncement(int announcementId, string username)
+        {
+            return Ok(await _ngoService.DeleteFosteringAnnouncement(username, announcementId));
+        }
+
+        [HttpPost("adoption-request")]
+        public async Task<IActionResult> AddAdoptionRequest(AdoptionRequestDto adoptionRequest)
+        {
+            return Ok(await _ngoService.AddAdoptionRequest(adoptionRequest));
+        }
+
+        [HttpPost("fostering-request")]
+        public async Task<IActionResult> AddAdoptionRequest(FosteringRequestDto fosteringRequest)
+        {
+            return Ok(await _ngoService.AddFosteringRequest(fosteringRequest));
+        }
+
+        [HttpGet("adoption-requests/{announcementId}")]
+        public async Task<IActionResult> GetAdoptionRequest(int announcementId)
+        {
+            return Ok(await _ngoService.GetAdoptionRequests(announcementId));
+        }
+
+        [HttpGet("fostering-requests/{announcementId}")]
+        public async Task<IActionResult> GetFosteringRequests(int announcementId)
+        {
+            return Ok(await _ngoService.GetFosteringRequests(announcementId));
         }
     }
 }

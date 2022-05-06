@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -47,22 +46,34 @@ namespace AnimalAdoption.BusinessLogic.Services.Ngo
 
         public async Task<IEnumerable<AdoptionAnnouncementListModelDto>> GetUserAdoptionAnnouncements(GetAnnouncementsDto username)
         {
-            var ngo = await _dbContext.Ngos
+            var ngos = await _dbContext.Ngos
                 .Include(x => x.AdoptionAnnouncements).ThenInclude(x => x.Photos)
                 .Include(x => x.NgoAddress).ThenInclude(x => x.County)
                 .Include(x => x.NgoAddress).ThenInclude(x => x.City)
-                .FirstOrDefaultAsync(x => x.UserName == username.Username);
-
-            if (ngo.AdoptionAnnouncements == null) return Enumerable.Empty<AdoptionAnnouncementListModelDto>(); 
-
-            var announcements = _mapper.Map<AdoptionAnnouncementListModelDto[]>(ngo.AdoptionAnnouncements);
-            foreach (var announcement in announcements)
+                .Where(x => x.UserName == username.Username)
+                .ToListAsync();
+            var adoptionAnnouncements = new List<AdoptionAnnouncementListModelDto>();
+            if (ngos.Count == 0)
             {
-                announcement.County = _mapper.Map<CountyDto>(ngo.NgoAddress.County);
-                announcement.City = _mapper.Map<CityDto>(ngo.NgoAddress.City);
-                announcement.Street = ngo.NgoAddress.Street;
+                ngos = await _dbContext.Ngos
+                                        .Include(x => x.AdoptionAnnouncements).ThenInclude(x => x.Photos)
+                                        .Include(x => x.NgoAddress).ThenInclude(x => x.County)
+                                        .Include(x => x.NgoAddress).ThenInclude(x => x.City)
+                                        .ToListAsync();
             }
-            return announcements;
+            foreach(var ngo in ngos)
+            {
+                var announcements = _mapper.Map<AdoptionAnnouncementListModelDto[]>(ngo.AdoptionAnnouncements);
+                announcements = announcements.Where(x => !x.Status).ToArray();
+                foreach (var announcement in announcements)
+                {
+                    announcement.County = _mapper.Map<CountyDto>(ngo.NgoAddress.County);
+                    announcement.City = _mapper.Map<CityDto>(ngo.NgoAddress.City);
+                    announcement.Street = ngo.NgoAddress.Street;
+                }
+                adoptionAnnouncements.AddRange(announcements);
+            }
+            return adoptionAnnouncements;
         }
 
         public async Task<FosteringAnnouncementDto> AddFosteringAnnouncement(string username, FosteringAnnouncementDto fosteringAnnouncement)
@@ -91,22 +102,150 @@ namespace AnimalAdoption.BusinessLogic.Services.Ngo
 
         public async Task<IEnumerable<FosteringAnnouncementListModelDto>> GetUserFosteringAnnouncements(GetAnnouncementsDto username)
         {
-            var ngo = await _dbContext.Ngos
+            var ngos = await _dbContext.Ngos
                 .Include(x => x.FosteringAnnouncements).ThenInclude(x => x.Photos)
                 .Include(x => x.NgoAddress).ThenInclude(x => x.County)
                 .Include(x => x.NgoAddress).ThenInclude(x => x.City)
-                .FirstOrDefaultAsync(x => x.UserName == username.Username);
-
-            if (ngo.FosteringAnnouncements == null) return Enumerable.Empty<FosteringAnnouncementListModelDto>();
-
-            var announcements = _mapper.Map<FosteringAnnouncementListModelDto[]>(ngo.FosteringAnnouncements);
-            foreach (var announcement in announcements)
+                .Where(x => x.UserName == username.Username)
+                .ToListAsync();
+            var fosteringAnnouncements = new List<FosteringAnnouncementListModelDto>();
+            if (ngos.Count == 0)
             {
-                announcement.County = _mapper.Map<CountyDto>(ngo.NgoAddress.County);
-                announcement.City = _mapper.Map<CityDto>(ngo.NgoAddress.City);
-                announcement.Street = ngo.NgoAddress.Street;
+                ngos = await _dbContext.Ngos
+                                        .Include(x => x.FosteringAnnouncements).ThenInclude(x => x.Photos)
+                                        .Include(x => x.NgoAddress).ThenInclude(x => x.County)
+                                        .Include(x => x.NgoAddress).ThenInclude(x => x.City)
+                                        .ToListAsync();
             }
-            return announcements;
+            foreach (var ngo in ngos)
+            {
+                var announcements = _mapper.Map<FosteringAnnouncementListModelDto[]>(ngo.FosteringAnnouncements);
+                announcements = announcements.Where(x => !x.Status).ToArray();
+                foreach (var announcement in announcements)
+                {
+                    announcement.County = _mapper.Map<CountyDto>(ngo.NgoAddress.County);
+                    announcement.City = _mapper.Map<CityDto>(ngo.NgoAddress.City);
+                    announcement.Street = ngo.NgoAddress.Street;
+                }
+                fosteringAnnouncements.AddRange(announcements);
+            }
+            return fosteringAnnouncements;
+        }
+
+        public async Task<int> DeleteAdoptionAnnouncement(string username, int adoptionAnnouncementId)
+        {
+            var ngo = await _dbContext.Ngos
+                .Include(x => x.AdoptionAnnouncements).ThenInclude(x => x.Photos)
+                .FirstOrDefaultAsync(x => x.UserName == username);
+            var announcement = await _dbContext.AdoptionAnnouncements.FirstOrDefaultAsync(x => x.Id == adoptionAnnouncementId);
+            _dbContext.Photos.RemoveRange(announcement.Photos);
+            ngo.AdoptionAnnouncements.Remove(announcement);
+            await _dbContext.SaveChangesAsync();
+            return adoptionAnnouncementId;
+        }
+
+        public async Task<int> DeleteFosteringAnnouncement(string username, int fosteringAnnouncementId)
+        {
+            var ngo = await _dbContext.Ngos
+                .Include(x => x.FosteringAnnouncements).ThenInclude(x => x.Photos)
+                .FirstOrDefaultAsync(x => x.UserName == username);
+            var announcement = await _dbContext.FosteringAnnouncements.FirstOrDefaultAsync(x => x.Id == fosteringAnnouncementId);
+            _dbContext.Photos.RemoveRange(announcement.Photos);
+            ngo.FosteringAnnouncements.Remove(announcement);
+            await _dbContext.SaveChangesAsync();
+            return fosteringAnnouncementId;
+        }
+
+        public async Task<AdoptionRequestDto> AddAdoptionRequest(AdoptionRequestDto adoptionRequest)
+        {
+            var adoptionAnnouncement = await _dbContext.AdoptionAnnouncements.Include(x => x.AdoptionRequests).FirstOrDefaultAsync(x => x.Id == adoptionRequest.AdoptionAnnouncementId);
+            var adoptionRequestM = _mapper.Map<AdoptionRequest>(adoptionRequest);
+            adoptionAnnouncement.AdoptionRequests.Add(adoptionRequestM);
+            await _dbContext.SaveChangesAsync();
+            return _mapper.Map<AdoptionRequestDto>(adoptionRequestM);
+        }
+
+        public async Task<FosteringRequestDto> AddFosteringRequest(FosteringRequestDto fosteringRequest)
+        {
+            var fosteringAnnouncement = await _dbContext.FosteringAnnouncements.Include(x => x.FosteringRequests).FirstOrDefaultAsync(x => x.Id == fosteringRequest.FosteringAnnouncementId);
+            var fosteringRequestM = _mapper.Map<FosteringRequest>(fosteringRequest);
+            fosteringAnnouncement.FosteringRequests.Add(fosteringRequestM);
+            await _dbContext.SaveChangesAsync();
+            return _mapper.Map<FosteringRequestDto>(fosteringRequestM);
+        }
+
+        public async Task<List<AdoptionRequestListModelDto>> GetAdoptionRequests(int announcementId)
+        {
+            var adoptionRequests = await _dbContext.AdoptionAnnouncements
+                .Include(x => x.AdoptionRequests)
+                .Where(x => x.Id == announcementId)
+                .Select(x => x.AdoptionRequests)
+                .FirstOrDefaultAsync();
+            var usernames = adoptionRequests.Select(x => x.Username).ToList();
+            var basicUser = await _dbContext.BasicUsers
+                .Include(x => x.Address).ThenInclude(x => x.City)
+                .Include(x => x.Address).ThenInclude(x => x.County)
+                .Where(x => usernames.Contains(x.UserName)).ToListAsync();
+            var adoptionRequestsModel = new List<AdoptionRequestListModelDto>();
+            foreach(var request in adoptionRequests)
+            {
+                var user = basicUser.Where(x => x.UserName == request.Username).FirstOrDefault();
+                var reqModel = new AdoptionRequestListModelDto
+                {
+                    Id = request.Id,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    PhoneNumber = user.PhoneNumber,
+                    Email = user.Email,
+                    County = _mapper.Map<CountyDto>(user.Address.County),
+                    City = _mapper.Map<CityDto>(user.Address.City),
+                    Street = user.Address.Street,
+                    Reason = request.Reason,
+                    AvailableDate = request.AvailableDate,
+                    SomethingElse = request.SomethingElse,
+                    Status = request.Status,
+                    AdoptionAnnouncementId = announcementId
+                };
+                adoptionRequestsModel.Add(reqModel);
+            }
+            return adoptionRequestsModel;
+        }
+
+        public async Task<List<FosteringRequestListModelDto>> GetFosteringRequests(int announcementId)
+        {
+            var fosteringRequests = await _dbContext.FosteringAnnouncements
+                .Include(x => x.FosteringRequests)
+                .Where(x => x.Id == announcementId)
+                .Select(x => x.FosteringRequests)
+                .FirstOrDefaultAsync();
+            var usernames = fosteringRequests.Select(x => x.Username).ToList();
+            var basicUser = await _dbContext.BasicUsers
+                .Include(x => x.Address).ThenInclude(x => x.City)
+                .Include(x => x.Address).ThenInclude(x => x.County)
+                .Where(x => usernames.Contains(x.UserName)).ToListAsync();
+            var fosteringRequestsModel = new List<FosteringRequestListModelDto>();
+            foreach (var request in fosteringRequests)
+            {
+                var user = basicUser.Where(x => x.UserName == request.Username).FirstOrDefault();
+                var reqModel = new FosteringRequestListModelDto
+                {
+                    Id = request.Id,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    PhoneNumber = user.PhoneNumber,
+                    Email = user.Email,
+                    County = _mapper.Map<CountyDto>(user.Address.County),
+                    City = _mapper.Map<CityDto>(user.Address.City),
+                    Street = user.Address.Street,
+                    Reason = request.Reason,
+                    AvailableDate = request.AvailableDate,
+                    SomethingElse = request.SomethingElse,
+                    Status = request.Status,
+                    FosteringAnnouncementId = announcementId
+                };
+                fosteringRequestsModel.Add(reqModel);
+            }
+            return fosteringRequestsModel;
         }
     }
 }

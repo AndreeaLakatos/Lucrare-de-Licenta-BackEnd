@@ -4,14 +4,16 @@ using AnimalAdoption.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace AnimalAdoption.Data.Migrations
 {
     [DbContext(typeof(AnimalAdoptionDbContext))]
-    partial class AnimalAdoptionDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220506093502_V8")]
+    partial class V8
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -92,9 +94,6 @@ namespace AnimalAdoption.Data.Migrations
                     b.Property<DateTime>("AvailableDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("BasicUserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("Reason")
                         .HasColumnType("nvarchar(max)");
 
@@ -104,14 +103,9 @@ namespace AnimalAdoption.Data.Migrations
                     b.Property<bool>("Status")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Username")
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("AdoptionAnnouncementId");
-
-                    b.HasIndex("BasicUserId");
 
                     b.ToTable("AdoptionRequests");
                 });
@@ -284,9 +278,6 @@ namespace AnimalAdoption.Data.Migrations
                     b.Property<DateTime>("AvailableDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("BasicUserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<int?>("FosteringAnnouncementId")
                         .HasColumnType("int");
 
@@ -299,12 +290,7 @@ namespace AnimalAdoption.Data.Migrations
                     b.Property<bool>("Status")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Username")
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("BasicUserId");
 
                     b.HasIndex("FosteringAnnouncementId");
 
@@ -395,15 +381,15 @@ namespace AnimalAdoption.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "0d9b0c54-42cd-422a-946f-fda045ccfc72",
-                            ConcurrencyStamp = "208dae2f-8111-4a50-a631-7ee3c09a6fe6",
+                            Id = "51473ca0-36de-487d-ae91-7c325c09e72d",
+                            ConcurrencyStamp = "f1f8c950-90ce-438b-918b-65a2c54f1fa7",
                             Name = "BasicUser",
                             NormalizedName = "BASICUSER"
                         },
                         new
                         {
-                            Id = "87e17198-0963-4df7-b1df-ad96f4e9e516",
-                            ConcurrencyStamp = "fe6116d1-c002-4f05-bfca-dd76b188893d",
+                            Id = "dd75d055-ee61-4673-bb44-945d2e9547a4",
+                            ConcurrencyStamp = "d4c0d46e-dd19-4a78-88ac-97ec6976b17c",
                             Name = "Ngo",
                             NormalizedName = "NGO"
                         });
@@ -573,10 +559,6 @@ namespace AnimalAdoption.Data.Migrations
                     b.HasOne("AnimalAdoption.Data.Entities.AdoptionAnnouncement", null)
                         .WithMany("AdoptionRequests")
                         .HasForeignKey("AdoptionAnnouncementId");
-
-                    b.HasOne("AnimalAdoption.Data.Entities.BasicUser", null)
-                        .WithMany("AdoptionRequests")
-                        .HasForeignKey("BasicUserId");
                 });
 
             modelBuilder.Entity("AnimalAdoption.Data.Entities.BasicUser", b =>
@@ -606,10 +588,6 @@ namespace AnimalAdoption.Data.Migrations
 
             modelBuilder.Entity("AnimalAdoption.Data.Entities.FosteringRequest", b =>
                 {
-                    b.HasOne("AnimalAdoption.Data.Entities.BasicUser", null)
-                        .WithMany("FosteringRequests")
-                        .HasForeignKey("BasicUserId");
-
                     b.HasOne("AnimalAdoption.Data.Entities.FosteringAnnouncement", null)
                         .WithMany("FosteringRequests")
                         .HasForeignKey("FosteringAnnouncementId");
@@ -700,13 +678,6 @@ namespace AnimalAdoption.Data.Migrations
                     b.Navigation("AdoptionRequests");
 
                     b.Navigation("Photos");
-                });
-
-            modelBuilder.Entity("AnimalAdoption.Data.Entities.BasicUser", b =>
-                {
-                    b.Navigation("AdoptionRequests");
-
-                    b.Navigation("FosteringRequests");
                 });
 
             modelBuilder.Entity("AnimalAdoption.Data.Entities.FosteringAnnouncement", b =>
