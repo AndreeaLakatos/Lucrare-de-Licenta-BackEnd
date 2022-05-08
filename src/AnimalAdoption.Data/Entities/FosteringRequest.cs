@@ -9,6 +9,7 @@ namespace AnimalAdoption.Data.Entities
         public DateTime AvailableDate { get; set; }
         public bool Status { get; set; }
         public string SomethingElse { get; set; }
+        public bool Reviewed { get; set; }
         public string Username { get; set; }
     }
 }
