@@ -110,5 +110,17 @@ namespace AnimalAdoption.Web.Controllers
         {
             return Ok(await _ngoService.GetFosteringRequests(announcementId));
         }
+
+        [HttpPost("adoption-requests")]
+        public async Task<IActionResult> UpdateAdoptionRequest(AdoptionRequestListModelDto adoptionAnnouncementListModelDto)
+        {
+            return Ok(await _ngoService.UpdateAdoptionRequest(adoptionAnnouncementListModelDto));
+        }
+
+        [HttpPost("fostering-requests")]
+        public async Task<IActionResult> UpdateFosteringRequest(FosteringRequestListModelDto fosteringAnnouncementListModelDto)
+        {
+            return Ok(await _ngoService.UpdateFosteringRequest(fosteringAnnouncementListModelDto));
+        }
     }
 }

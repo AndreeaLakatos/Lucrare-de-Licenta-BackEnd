@@ -64,7 +64,7 @@ namespace AnimalAdoption.BusinessLogic.Services.Ngo
             foreach(var ngo in ngos)
             {
                 var announcements = _mapper.Map<AdoptionAnnouncementListModelDto[]>(ngo.AdoptionAnnouncements);
-                announcements = announcements.Where(x => !x.Status).ToArray();
+                //if (ngos.Count == 1) announcements = announcements.Where(x => !x.Status).ToArray();
                 foreach (var announcement in announcements)
                 {
                     announcement.County = _mapper.Map<CountyDto>(ngo.NgoAddress.County);
@@ -120,7 +120,7 @@ namespace AnimalAdoption.BusinessLogic.Services.Ngo
             foreach (var ngo in ngos)
             {
                 var announcements = _mapper.Map<FosteringAnnouncementListModelDto[]>(ngo.FosteringAnnouncements);
-                announcements = announcements.Where(x => !x.Status).ToArray();
+                //announcements = announcements.Where(x => !x.Status).ToArray();
                 foreach (var announcement in announcements)
                 {
                     announcement.County = _mapper.Map<CountyDto>(ngo.NgoAddress.County);
@@ -204,6 +204,7 @@ namespace AnimalAdoption.BusinessLogic.Services.Ngo
                     AvailableDate = request.AvailableDate,
                     SomethingElse = request.SomethingElse,
                     Status = request.Status,
+                    Reviewed = request.Reviewed,
                     AdoptionAnnouncementId = announcementId
                 };
                 adoptionRequestsModel.Add(reqModel);
@@ -241,11 +242,55 @@ namespace AnimalAdoption.BusinessLogic.Services.Ngo
                     AvailableDate = request.AvailableDate,
                     SomethingElse = request.SomethingElse,
                     Status = request.Status,
+                    Reviewed = request.Reviewed,
                     FosteringAnnouncementId = announcementId
                 };
                 fosteringRequestsModel.Add(reqModel);
             }
             return fosteringRequestsModel;
+        }
+
+        public async Task<AdoptionRequestListModelDto> UpdateAdoptionRequest(AdoptionRequestListModelDto adoptionRequest)
+        {
+            var adoptionRequests = await _dbContext.AdoptionAnnouncements.Where(x => x.Id == adoptionRequest.AdoptionAnnouncementId).Select(x => x.AdoptionRequests).FirstOrDefaultAsync();
+            var announcement = await _dbContext.AdoptionAnnouncements.FirstOrDefaultAsync(x => x.Id == adoptionRequest.AdoptionAnnouncementId);
+            
+            foreach (var request in adoptionRequests)
+            {
+                if (adoptionRequest.Id == request.Id)
+                {
+                    request.Status = adoptionRequest.Status;
+                }
+
+                if (adoptionRequest.Status)
+                    request.Reviewed = true;
+            }
+
+            if (adoptionRequest.Status) announcement.Status = true;
+                
+            await _dbContext.SaveChangesAsync();
+            return adoptionRequest;  
+        }
+
+        public async Task<FosteringRequestListModelDto> UpdateFosteringRequest(FosteringRequestListModelDto fosteringRequest)
+        {
+            var fosteringRequests =  await _dbContext.FosteringAnnouncements.Where(x => x.Id == fosteringRequest.FosteringAnnouncementId).Select(x => x.FosteringRequests).FirstOrDefaultAsync();
+            var announcement = await _dbContext.FosteringAnnouncements.FirstOrDefaultAsync(x => x.Id == fosteringRequest.FosteringAnnouncementId);
+
+            foreach (var request in fosteringRequests)
+            {
+                if (fosteringRequest.Id == request.Id)
+                {
+                    request.Status = fosteringRequest.Status;
+                }
+
+                if (fosteringRequest.Status)
+                    request.Reviewed = true;
+            }
+            if (fosteringRequest.Status) announcement.Status = true;
+
+            await _dbContext.SaveChangesAsync();
+            return fosteringRequest;
         }
     }
 }
