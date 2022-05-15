@@ -10,5 +10,6 @@ namespace AnimalAdoption.Data.Entities
         public Address Address { get; set; }
         public ICollection<AdoptionRequest> AdoptionRequests { get; set; }
         public ICollection<FosteringRequest> FosteringRequests { get; set; }
+        public ICollection<Notification> Notifications { get; set; }
     }
 }

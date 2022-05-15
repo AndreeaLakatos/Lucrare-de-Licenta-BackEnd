@@ -18,6 +18,7 @@ namespace AnimalAdoption.Web.Services.Account
         Task<UserDetailsDto> SaveUserDetails(UserDetailsDto userDetails);
         Task<NgoDetailsDto> SaveNgoDetails(string username, NgoDetailsDto ngoDetailsDto);
         Task<UserPreferencesDto> SaveUserPreferences(string username, UserPreferencesDto userPreferences);
+        Task<NotificationDto[]> GetUserNotifications(string username);
 
     }
 }

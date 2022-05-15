@@ -44,13 +44,13 @@ namespace AnimalAdoption.BusinessLogic.Services.Ngo
             return _mapper.Map<PhotoDto>(imageN);
         }
 
-        public async Task<IEnumerable<AdoptionAnnouncementListModelDto>> GetUserAdoptionAnnouncements(GetAnnouncementsDto username)
+        public async Task<IEnumerable<AdoptionAnnouncementListModelDto>> GetUserAdoptionAnnouncements(string username)
         {
             var ngos = await _dbContext.Ngos
                 .Include(x => x.AdoptionAnnouncements).ThenInclude(x => x.Photos)
                 .Include(x => x.NgoAddress).ThenInclude(x => x.County)
                 .Include(x => x.NgoAddress).ThenInclude(x => x.City)
-                .Where(x => x.UserName == username.Username)
+                .Where(x => x.UserName == username)
                 .ToListAsync();
             var adoptionAnnouncements = new List<AdoptionAnnouncementListModelDto>();
             if (ngos.Count == 0)
@@ -159,7 +159,16 @@ namespace AnimalAdoption.BusinessLogic.Services.Ngo
         public async Task<AdoptionRequestDto> AddAdoptionRequest(AdoptionRequestDto adoptionRequest)
         {
             var adoptionAnnouncement = await _dbContext.AdoptionAnnouncements.Include(x => x.AdoptionRequests).FirstOrDefaultAsync(x => x.Id == adoptionRequest.AdoptionAnnouncementId);
+            var ngo = await _dbContext.Ngos.Include(x => x.AdoptionAnnouncements).Include(x => x.Notifications).FirstOrDefaultAsync(x => x.AdoptionAnnouncements.Contains(adoptionAnnouncement));
+            
             var adoptionRequestM = _mapper.Map<AdoptionRequest>(adoptionRequest);
+            var notification = new Notification
+            {
+                Text = "Ai primit o cerere pentru anuntul #" + adoptionAnnouncement.Id + " de la utilizatorul " + adoptionRequest.Username,
+                Date = DateTime.Now.Date.ToString("dd.MM.yyyy"),
+                Hour = DateTime.Now.TimeOfDay.ToString()
+            };
+            ngo.Notifications.Add(notification);
             adoptionAnnouncement.AdoptionRequests.Add(adoptionRequestM);
             await _dbContext.SaveChangesAsync();
             return _mapper.Map<AdoptionRequestDto>(adoptionRequestM);
@@ -168,8 +177,17 @@ namespace AnimalAdoption.BusinessLogic.Services.Ngo
         public async Task<FosteringRequestDto> AddFosteringRequest(FosteringRequestDto fosteringRequest)
         {
             var fosteringAnnouncement = await _dbContext.FosteringAnnouncements.Include(x => x.FosteringRequests).FirstOrDefaultAsync(x => x.Id == fosteringRequest.FosteringAnnouncementId);
+            var ngo = await _dbContext.Ngos.Include(x => x.FosteringAnnouncements).Include(x => x.Notifications).FirstOrDefaultAsync(x => x.FosteringAnnouncements.Contains(fosteringAnnouncement));
+
             var fosteringRequestM = _mapper.Map<FosteringRequest>(fosteringRequest);
             fosteringAnnouncement.FosteringRequests.Add(fosteringRequestM);
+            var notification = new Notification
+            {
+                Text = "Ai primit o cerere pentru anuntul #" + fosteringAnnouncement.Id + " de la utilizatorul " + fosteringRequest.Username,
+                Date = DateTime.Now.Date.ToString("dd.MM.yyyy"),
+                Hour = DateTime.Now.TimeOfDay.ToString()
+            };
+            ngo.Notifications.Add(notification);
             await _dbContext.SaveChangesAsync();
             return _mapper.Map<FosteringRequestDto>(fosteringRequestM);
         }
@@ -257,13 +275,34 @@ namespace AnimalAdoption.BusinessLogic.Services.Ngo
             
             foreach (var request in adoptionRequests)
             {
+                var user = await _dbContext.BasicUsers.Include(x => x.Notifications).FirstOrDefaultAsync(x => x.UserName == request.Username);
                 if (adoptionRequest.Id == request.Id)
                 {
+                    if (adoptionRequest.Status)
+                    {
+                        var notification = new Notification
+                        {
+                            Text = "Cererea cu numarul #" + request.Id + "pentru anuntul  #" + adoptionRequest.AdoptionAnnouncementId + " a fost acceptata, vei fi contactat telefonic de catre membrii asociatiei!!",
+                            Date = DateTime.Now.Date.ToString("dd.MM.yyyy"),
+                            Hour = DateTime.Now.TimeOfDay.ToString()
+                        };
+                        user.Notifications.Add(notification);
+                        request.Reviewed = true;
+                    }
                     request.Status = adoptionRequest.Status;
                 }
 
-                if (adoptionRequest.Status)
+                if (adoptionRequest.Status && adoptionRequest.Id != request.Id)
+                {
+                    var notification = new Notification
+                    {
+                        Text = "Cererea cu numarul #" + request.Id + "pentru anuntul  #" + adoptionRequest.AdoptionAnnouncementId + " a fost refuzata.",
+                        Date = DateTime.Now.Date.ToString("dd.MM.yyyy"),
+                        Hour = DateTime.Now.TimeOfDay.ToString()
+                    };
+                    user.Notifications.Add(notification);
                     request.Reviewed = true;
+                }    
             }
 
             if (adoptionRequest.Status) announcement.Status = true;
@@ -279,13 +318,34 @@ namespace AnimalAdoption.BusinessLogic.Services.Ngo
 
             foreach (var request in fosteringRequests)
             {
+                var user = await _dbContext.BasicUsers.Include(x => x.Notifications).FirstOrDefaultAsync(x => x.UserName == request.Username);
                 if (fosteringRequest.Id == request.Id)
                 {
+                    if (fosteringRequest.Status)
+                    {
+                        var notification = new Notification
+                        {
+                            Text = "Cererea cu numarul #" + request.Id + "pentru anuntul  #" + fosteringRequest.FosteringAnnouncementId + " a fost acceptata, vei fi contactat telefonic de catre membrii asociatiei!!",
+                            Date = DateTime.Now.Date.ToString("dd.MM.yyyy"),
+                            Hour = DateTime.Now.TimeOfDay.ToString()
+                        };
+                        user.Notifications.Add(notification);
+                        request.Reviewed = true;
+                    }
                     request.Status = fosteringRequest.Status;
                 }
 
-                if (fosteringRequest.Status)
+                if (fosteringRequest.Status && fosteringRequest.Id != request.Id)
+                {
+                    var notification = new Notification
+                    {
+                        Text = "Cererea cu numarul #" + request.Id + "pentru anuntul  #" + fosteringRequest.FosteringAnnouncementId + " a fost refuzata.",
+                        Date = DateTime.Now.Date.ToString("dd.MM.yyyy"),
+                        Hour = DateTime.Now.TimeOfDay.ToString()
+                    };
+                    user.Notifications.Add(notification);
                     request.Reviewed = true;
+                }
             }
             if (fosteringRequest.Status) announcement.Status = true;
 

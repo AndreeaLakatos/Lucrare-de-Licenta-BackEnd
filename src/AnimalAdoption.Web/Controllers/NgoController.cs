@@ -19,8 +19,8 @@ namespace AnimalAdoption.Web.Controllers
             _imageService = imageService;
         }
 
-        [HttpPost("adoption-announcements")]
-        public async Task<IActionResult> GetUserAdoptionAnnouncements([FromBody] GetAnnouncementsDto username)
+        [HttpGet("adoption-announcements/{username}")]
+        public async Task<IActionResult> GetUserAdoptionAnnouncements(string username)
         {
             return Ok(await _ngoService.GetUserAdoptionAnnouncements(username));
         }

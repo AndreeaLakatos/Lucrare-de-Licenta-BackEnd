@@ -102,5 +102,11 @@ namespace AnimalAdoption.Web.Controllers
             return Ok(await _accountService.SaveNgoDetails(username, ngoDetails));
         }
 
+        [HttpGet("notifications/{username}")]
+        public async Task<IActionResult> GetUserNotifications(string username)
+        {
+            return Ok(await _accountService.GetUserNotifications(username));
+        }
+
     }
 }

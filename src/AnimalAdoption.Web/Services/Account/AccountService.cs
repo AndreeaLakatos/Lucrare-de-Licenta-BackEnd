@@ -289,5 +289,12 @@ namespace AnimalAdoption.Web.Services.Account
 
             return ngoDetailsDto;
         }
+
+        public async Task<NotificationDto[]> GetUserNotifications(string username)
+        {
+            var user = await _dbContext.BasicUsers.Include(x => x.Notifications).FirstOrDefaultAsync(x => x.UserName == username);
+            if (user == null) user = await _dbContext.Ngos.Include(x => x.Notifications).FirstOrDefaultAsync(x => x.UserName == username);
+            return _mapper.Map<NotificationDto[]>(user.Notifications);
+        }
     }
 }

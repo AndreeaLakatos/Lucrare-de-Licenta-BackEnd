@@ -21,6 +21,7 @@ namespace AnimalAdoption.Data.Entities
         public virtual DbSet<Ngo> Ngos { get; set; }
         public virtual DbSet<AdoptionRequest> AdoptionRequests { get; set; }
         public virtual DbSet<FosteringRequest> FosteringRequests { get; set; }
+        public virtual DbSet<Notification> Notifications { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
