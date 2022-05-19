@@ -18,6 +18,7 @@ namespace AnimalAdoption.BusinessLogic.Dtos
         public string Street { get; set; }
         public string MoreDetails { get; set; }
         public bool Status { get; set; }
+        public bool HasRequest { get; set; }
         public IEnumerable<PhotoDto> Photos { get; set; }
     }
 }

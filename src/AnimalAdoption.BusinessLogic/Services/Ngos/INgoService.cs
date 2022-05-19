@@ -1,17 +1,18 @@
 ﻿using System.Collections.Generic;
 using AnimalAdoption.BusinessLogic.Dtos;
 using System.Threading.Tasks;
+using AnimalAdoption.BusinessLogic.Helpers.PagedList;
 
-namespace AnimalAdoption.BusinessLogic.Services.Ngo
+namespace AnimalAdoption.BusinessLogic.Services.Ngos
 {
     public interface INgoService
     {
         public Task<AdoptionAnnouncementDto> AddAdoptionAnnouncement(string username, AdoptionAnnouncementDto adoptionAnnouncement);
         public Task<FosteringAnnouncementDto> AddFosteringAnnouncement(string username, FosteringAnnouncementDto adoptionAnnouncement);
         public Task<PhotoDto> AddAdoptionImage(int adoptionAdId, PhotoDto image);
-        public Task<IEnumerable<AdoptionAnnouncementListModelDto>> GetUserAdoptionAnnouncements(string username);
+        Task<PagedEntity<AdoptionAnnouncementListModelDto>> GetUserAdoptionAnnouncements(PaginationEntity paginationEntity, string username);
         public Task<PhotoDto> AddFosteringImage(int fostyeringAdId, PhotoDto image);
-        public Task<IEnumerable<FosteringAnnouncementListModelDto>> GetUserFosteringAnnouncements(GetAnnouncementsDto username);
+        Task<PagedEntity<FosteringAnnouncementListModelDto>> GetUserFosteringAnnouncements(PaginationEntity paginationEntity, string username);
         Task<int> DeleteAdoptionAnnouncement(string username, int adoptionAnnouncementId);
         Task<int> DeleteFosteringAnnouncement(string username, int fosteringAnnouncementId);
         Task<AdoptionRequestDto> AddAdoptionRequest(AdoptionRequestDto adoptionRequest);
@@ -20,5 +21,8 @@ namespace AnimalAdoption.BusinessLogic.Services.Ngo
         Task<List<FosteringRequestListModelDto>> GetFosteringRequests(int announcementId);
         Task<AdoptionRequestListModelDto> UpdateAdoptionRequest(AdoptionRequestListModelDto adoptionRequest);
         Task<FosteringRequestListModelDto> UpdateFosteringRequest(FosteringRequestListModelDto fosteringRequest);
+        Task<List<UserAdoptionRequestDto>> GetUserAdoptionRequest(string username);
+        Task<List<UserFosteringRequestDto>> GetUserFosteringRequest(string username);
+
     }
 }

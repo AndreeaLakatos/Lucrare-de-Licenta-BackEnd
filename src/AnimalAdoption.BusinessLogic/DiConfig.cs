@@ -1,4 +1,4 @@
-﻿using AnimalAdoption.BusinessLogic.Services.Ngo;
+﻿using AnimalAdoption.BusinessLogic.Services.Ngos;
 using AnimalAdoption.BusinessLogic.Services.Utils;
 using Microsoft.Extensions.DependencyInjection;
 

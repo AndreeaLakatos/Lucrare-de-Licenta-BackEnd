@@ -1,8 +1,10 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using AnimalAdoption.BusinessLogic.Dtos;
+using AnimalAdoption.BusinessLogic.Extensions;
+using AnimalAdoption.BusinessLogic.Helpers.PagedList;
 using AnimalAdoption.BusinessLogic.Services.Image;
-using AnimalAdoption.BusinessLogic.Services.Ngo;
+using AnimalAdoption.BusinessLogic.Services.Ngos;
 using AnimalAdoption.Web.Controllers.Base;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,9 +22,11 @@ namespace AnimalAdoption.Web.Controllers
         }
 
         [HttpGet("adoption-announcements/{username}")]
-        public async Task<IActionResult> GetUserAdoptionAnnouncements(string username)
+        public async Task<IActionResult> GetUserAdoptionAnnouncements([FromQuery] PaginationEntity paginationEntity, string username)
         {
-            return Ok(await _ngoService.GetUserAdoptionAnnouncements(username));
+            var pagedList = await _ngoService.GetUserAdoptionAnnouncements(paginationEntity, username);
+            Response.AddPaginationHeader(pagedList.PaginationMetaData);
+            return Ok(pagedList.Result);
         }
 
         [HttpPost]
@@ -47,10 +51,12 @@ namespace AnimalAdoption.Web.Controllers
             return Ok(await _ngoService.AddAdoptionImage(announcementId, imageDto));
         }
 
-        [HttpPost("fostering-announcements")]
-        public async Task<IActionResult> GetUserFosteringAnnouncements([FromBody] GetAnnouncementsDto username)
+        [HttpGet("fostering-announcements/{username}")]
+        public async Task<IActionResult> GetUserFosteringAnnouncements([FromQuery] PaginationEntity paginationEntity, string username)
         {
-            return Ok(await _ngoService.GetUserFosteringAnnouncements(username));
+            var pagedList = await _ngoService.GetUserFosteringAnnouncements(paginationEntity, username);
+            Response.AddPaginationHeader(pagedList.PaginationMetaData);
+            return Ok(pagedList.Result);
         }
 
         [HttpPost]
@@ -121,6 +127,18 @@ namespace AnimalAdoption.Web.Controllers
         public async Task<IActionResult> UpdateFosteringRequest(FosteringRequestListModelDto fosteringAnnouncementListModelDto)
         {
             return Ok(await _ngoService.UpdateFosteringRequest(fosteringAnnouncementListModelDto));
+        }
+
+        [HttpPost("user-adoption-request/{username}")]
+        public async Task<IActionResult> GetUserAdoptionRequest(string username)
+        {
+            return Ok(await _ngoService.GetUserAdoptionRequest(username));
+        }
+
+        [HttpPost("user-fostering-request/{username}")]
+        public async Task<IActionResult> GetUserFosteringRequest(string username)
+        {
+            return Ok(await _ngoService.GetUserFosteringRequest(username));
         }
     }
 }
