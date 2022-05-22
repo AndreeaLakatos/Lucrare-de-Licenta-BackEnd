@@ -435,62 +435,40 @@ namespace AnimalAdoption.BusinessLogic.Services.Ngos
             return fosteringRequest;
         }
 
-        public async Task<List<UserAdoptionRequestDto>> GetUserAdoptionRequest(string username)
+        public async Task<UserAdoptionRequestDto> GetUserAdoptionRequest(int announcementId, string username)
         {
-            var ngos = await _dbContext.Ngos
-                .Include(x => x.AdoptionAnnouncements).ThenInclude(x => x.AdoptionRequests.Where(y => y.Username == username))
-                .Include(x => x.NgoAddress).ThenInclude(x => x.County)
-                .Include(x => x.NgoAddress).ThenInclude(x => x.City)
-                .ToListAsync();
-            var requests = new List<UserAdoptionRequestDto>();
-            foreach (var ngo in ngos)
-            {
-                var announcements = new List<UserAdoptionRequestDto>();
-                foreach (var ann in ngo.AdoptionAnnouncements)
+            return await _dbContext.AdoptionAnnouncements
+                .Where(x => x.Id == announcementId)
+                .Include(x => x.AdoptionRequests.Where(x => x.Username == username))
+                .Select(x => new UserAdoptionRequestDto
                 {
-                    var announcement = _mapper.Map<AdoptionAnnouncementListModelDto>(ann);
-                    announcement.County = _mapper.Map<CountyDto>(ngo.NgoAddress.County);
-                    announcement.City = _mapper.Map<CityDto>(ngo.NgoAddress.City);
-                    announcement.Street = ngo.NgoAddress.Street;
-                    var request = _mapper.Map<AdoptionRequestDto>(ann.AdoptionRequests.FirstOrDefault());
-                    announcements.Add(new UserAdoptionRequestDto
-                    {
-                       AdoptionAnnouncement = announcement,
-                       AdoptionRequest = request
-                    });
-                }
-                requests.AddRange(announcements);
-            }
-            return requests;
+                    AnnouncementId = x.Id,
+                    Reason = x.AdoptionRequests.First().Reason,
+                    FromDate = new DateTime().ToString("dd.MM.yyyy hh:mm"),
+                    AvailableDate = x.AdoptionRequests.First().AvailableDate.ToString("dd.MM.yyyy"),
+                    SomethingElse = x.AdoptionRequests.First().SomethingElse,
+                    Reviewed = x.AdoptionRequests.First().Reviewed,
+                    Status = x.AdoptionRequests.First().Status
+                })
+                .FirstOrDefaultAsync();
         }
 
-        public async Task<List<UserFosteringRequestDto>> GetUserFosteringRequest(string username)
+        public async Task<UserFosteringRequestDto> GetUserFosteringRequest(int announcementId, string username)
         {
-            var ngos = await _dbContext.Ngos
-                .Include(x => x.FosteringAnnouncements).ThenInclude(x => x.FosteringRequests.Where(y => y.Username == username))
-                .Include(x => x.NgoAddress).ThenInclude(x => x.County)
-                .Include(x => x.NgoAddress).ThenInclude(x => x.City)
-                .ToListAsync();
-            var requests = new List<UserFosteringRequestDto>();
-            foreach (var ngo in ngos)
-            {
-                var announcements = new List<UserFosteringRequestDto>();
-                foreach (var ann in ngo.FosteringAnnouncements)
+            return await _dbContext.FosteringAnnouncements
+                .Where(x => x.Id == announcementId)
+                .Include(x => x.FosteringRequests.Where(x => x.Username == username))
+                .Select(x => new UserFosteringRequestDto
                 {
-                    var announcement = _mapper.Map<FosteringAnnouncementListModelDto>(ann);
-                    announcement.County = _mapper.Map<CountyDto>(ngo.NgoAddress.County);
-                    announcement.City = _mapper.Map<CityDto>(ngo.NgoAddress.City);
-                    announcement.Street = ngo.NgoAddress.Street;
-                    var request = _mapper.Map<FosteringRequestDto>(ann.FosteringRequests.FirstOrDefault());
-                    announcements.Add(new UserFosteringRequestDto
-                    {
-                        FosteringAnnouncement = announcement,
-                        FosteringRequest = request
-                    });
-                }
-                requests.AddRange(announcements);
-            }
-            return requests;
+                    AnnouncementId = x.Id,
+                    Reason = x.FosteringRequests.First().Reason,
+                    FromDate = new DateTime().ToString("dd.MM.yyyy hh:mm"),
+                    AvailableDate = x.FosteringRequests.First().AvailableDate.ToString("dd.MM.yyyy"),
+                    SomethingElse = x.FosteringRequests.First().SomethingElse,
+                    Reviewed = x.FosteringRequests.First().Reviewed,
+                    Status = x.FosteringRequests.First().Status
+                })
+                .FirstOrDefaultAsync();
         }
     }
 }

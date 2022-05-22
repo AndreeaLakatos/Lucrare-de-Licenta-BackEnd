@@ -129,16 +129,16 @@ namespace AnimalAdoption.Web.Controllers
             return Ok(await _ngoService.UpdateFosteringRequest(fosteringAnnouncementListModelDto));
         }
 
-        [HttpPost("user-adoption-request/{username}")]
-        public async Task<IActionResult> GetUserAdoptionRequest(string username)
+        [HttpGet("user-adoption-request/{username}/{announcementId}")]
+        public async Task<IActionResult> GetUserAdoptionRequest(int announcementId, string username)
         {
-            return Ok(await _ngoService.GetUserAdoptionRequest(username));
+            return Ok(await _ngoService.GetUserAdoptionRequest(announcementId, username));
         }
 
-        [HttpPost("user-fostering-request/{username}")]
-        public async Task<IActionResult> GetUserFosteringRequest(string username)
+        [HttpGet("user-fostering-request/{username}/{announcementId}")]
+        public async Task<IActionResult> GetUserFosteringRequest(int announcementId, string username)
         {
-            return Ok(await _ngoService.GetUserFosteringRequest(username));
+            return Ok(await _ngoService.GetUserFosteringRequest(announcementId, username));
         }
     }
 }
