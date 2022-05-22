@@ -11,6 +11,7 @@ namespace AnimalAdoption.Data.Entities
         public AnimalSize AnimalSize { get; set; }
         public string MoreDetails { get; set; }
         public bool Status { get; set; }
+        public string FromDate { get; set; }
         public ICollection<Photo> Photos { get; set; }
         public ICollection<AdoptionRequest> AdoptionRequests { get; set; }
     }

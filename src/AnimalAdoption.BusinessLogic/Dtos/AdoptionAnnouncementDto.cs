@@ -11,6 +11,7 @@ namespace AnimalAdoption.BusinessLogic.Dtos
         public AnimalSize AnimalSize { get; set; }
         public string MoreDetails { get; set; }
         public bool Status { get; set; }
+        public string FromDate { get; set; }
         public string Username { get; set; }
     }
 }

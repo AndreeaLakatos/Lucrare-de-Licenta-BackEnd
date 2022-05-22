@@ -27,6 +27,7 @@ namespace AnimalAdoption.BusinessLogic.Services.Ngos
             if (ngo == null) throw new Exception();
 
             var adoptionAd = _mapper.Map<AdoptionAnnouncement>(adoptionAnnouncement);
+            adoptionAd.FromDate = DateTime.Now.Date.ToString("dd.MM.yyyy");
             ngo.AdoptionAnnouncements.Add(adoptionAd);
             await _dbContext.SaveChangesAsync();
             return _mapper.Map<AdoptionAnnouncementDto>(adoptionAd);
@@ -124,6 +125,7 @@ namespace AnimalAdoption.BusinessLogic.Services.Ngos
             if (ngo == null) throw new Exception();
 
             var fosteringAd = _mapper.Map<FosteringAnnouncement>(fosteringAnnouncement);
+            fosteringAd.FromDate = DateTime.Now.Date.ToString("dd.MM.yyyy");
             ngo.FosteringAnnouncements.Add(fosteringAd);
             await _dbContext.SaveChangesAsync();
             return _mapper.Map<FosteringAnnouncementDto>(fosteringAd);
@@ -305,7 +307,8 @@ namespace AnimalAdoption.BusinessLogic.Services.Ngos
                     SomethingElse = request.SomethingElse,
                     Status = request.Status,
                     Reviewed = request.Reviewed,
-                    AdoptionAnnouncementId = announcementId
+                    AdoptionAnnouncementId = announcementId,
+                    FromDate = request.FromDate
                 };
                 adoptionRequestsModel.Add(reqModel);
             }
@@ -343,7 +346,8 @@ namespace AnimalAdoption.BusinessLogic.Services.Ngos
                     SomethingElse = request.SomethingElse,
                     Status = request.Status,
                     Reviewed = request.Reviewed,
-                    FosteringAnnouncementId = announcementId
+                    FosteringAnnouncementId = announcementId,
+                    FromDate = request.FromDate
                 };
                 fosteringRequestsModel.Add(reqModel);
             }
@@ -444,11 +448,11 @@ namespace AnimalAdoption.BusinessLogic.Services.Ngos
                 {
                     AnnouncementId = x.Id,
                     Reason = x.AdoptionRequests.First().Reason,
-                    FromDate = new DateTime().ToString("dd.MM.yyyy hh:mm"),
+                    FromDate = DateTime.Now.Date.ToString("dd.MM.yyyy"),
                     AvailableDate = x.AdoptionRequests.First().AvailableDate.ToString("dd.MM.yyyy"),
                     SomethingElse = x.AdoptionRequests.First().SomethingElse,
                     Reviewed = x.AdoptionRequests.First().Reviewed,
-                    Status = x.AdoptionRequests.First().Status
+                    Status = x.AdoptionRequests.First().Status,
                 })
                 .FirstOrDefaultAsync();
         }
@@ -462,7 +466,7 @@ namespace AnimalAdoption.BusinessLogic.Services.Ngos
                 {
                     AnnouncementId = x.Id,
                     Reason = x.FosteringRequests.First().Reason,
-                    FromDate = new DateTime().ToString("dd.MM.yyyy hh:mm"),
+                    FromDate = DateTime.Now.Date.ToString("dd.MM.yyyy"),
                     AvailableDate = x.FosteringRequests.First().AvailableDate.ToString("dd.MM.yyyy"),
                     SomethingElse = x.FosteringRequests.First().SomethingElse,
                     Reviewed = x.FosteringRequests.First().Reviewed,

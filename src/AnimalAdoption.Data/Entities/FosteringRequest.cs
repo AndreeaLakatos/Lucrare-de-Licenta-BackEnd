@@ -11,5 +11,6 @@ namespace AnimalAdoption.Data.Entities
         public string SomethingElse { get; set; }
         public bool Reviewed { get; set; }
         public string Username { get; set; }
+        public string FromDate { get; set; }
     }
 }
