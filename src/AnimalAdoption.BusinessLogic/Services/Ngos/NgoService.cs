@@ -79,6 +79,41 @@ namespace AnimalAdoption.BusinessLogic.Services.Ngos
                 
                 adoptionAnnouncements.AddRange(announcements);
             }
+
+            if (!string.IsNullOrWhiteSpace(paginationEntity.SearchQuery))
+            {
+                var searchQuery = paginationEntity.SearchQuery;
+                adoptionAnnouncements = adoptionAnnouncements.Where(x => x.Id.ToString().Contains(searchQuery)).ToList();
+            }
+
+            if (!string.IsNullOrWhiteSpace(paginationEntity.Types))
+            {
+                var types = paginationEntity.Types.Split(',').ToList();
+                adoptionAnnouncements = adoptionAnnouncements.Where(x => types.Contains(x.AnimalType.ToString())).ToList();
+            }
+
+            if(!string.IsNullOrWhiteSpace(paginationEntity.Sizes))
+            {
+                var sizes = paginationEntity.Sizes.Split(',').ToList();
+                adoptionAnnouncements = adoptionAnnouncements.Where(x => sizes.Contains(x.AnimalSize.ToString())).ToList();
+            }
+            if (!string.IsNullOrWhiteSpace(paginationEntity.Others))
+            {
+                var others = paginationEntity.Others.Split(',').ToList();
+                if (others.Contains("request"))
+                    adoptionAnnouncements = adoptionAnnouncements.Where(x => x.HasRequest).ToList();
+                if (others.Contains("notRequest"))
+                    adoptionAnnouncements = adoptionAnnouncements.Where(x => !x.HasRequest).ToList();
+            }
+            if (!string.IsNullOrWhiteSpace(paginationEntity.Status))
+            {
+                var status = paginationEntity.Status.Split(',').ToList();
+                if (status.Contains("active"))
+                    adoptionAnnouncements = adoptionAnnouncements.Where(x => !x.Status).ToList();
+                if (status.Contains("inactive"))
+                    adoptionAnnouncements = adoptionAnnouncements.Where(x => x.Status).ToList();
+            }
+
             return PagedEntity<AdoptionAnnouncementListModelDto>.Create(adoptionAnnouncements, paginationEntity.PageNumber,
                 paginationEntity.PageSize);
         }
@@ -138,6 +173,41 @@ namespace AnimalAdoption.BusinessLogic.Services.Ngos
                     if (req is not null) announcement.HasRequest = true;
                 }
                 fosteringAnnouncements.AddRange(announcements);
+            }
+
+            if (!string.IsNullOrWhiteSpace(paginationEntity.SearchQuery))
+            {
+                var searchQuery = paginationEntity.SearchQuery;
+                fosteringAnnouncements = fosteringAnnouncements.Where(x => x.Id.ToString().Contains(searchQuery)).ToList();
+            }
+
+            if (!string.IsNullOrWhiteSpace(paginationEntity.Types))
+            {
+                var types = paginationEntity.Types.Split(',').ToList();
+                fosteringAnnouncements = fosteringAnnouncements.Where(x => types.Contains(x.AnimalType.ToString())).ToList();
+            }
+
+            if (!string.IsNullOrWhiteSpace(paginationEntity.Sizes))
+            {
+                var sizes = paginationEntity.Sizes.Split(',').ToList();
+                var foster = fosteringAnnouncements[0].AnimalSize.ToString();
+                fosteringAnnouncements = fosteringAnnouncements.Where(x => sizes.Contains(x.AnimalSize.ToString())).ToList();
+            }
+            if (!string.IsNullOrWhiteSpace(paginationEntity.Others))
+            {
+                var others = paginationEntity.Others.Split(',').ToList();
+                if (others.Contains("request"))
+                    fosteringAnnouncements = fosteringAnnouncements.Where(x => x.HasRequest).ToList();
+                if (others.Contains("notRequest"))
+                    fosteringAnnouncements = fosteringAnnouncements.Where(x => !x.HasRequest).ToList();
+            }
+            if (!string.IsNullOrWhiteSpace(paginationEntity.Status))
+            {
+                var status = paginationEntity.Status.Split(',').ToList();
+                if (status.Contains("active"))
+                    fosteringAnnouncements = fosteringAnnouncements.Where(x => !x.Status).ToList();
+                if (status.Contains("inactive"))
+                    fosteringAnnouncements = fosteringAnnouncements.Where(x => x.Status).ToList();
             }
 
             return PagedEntity<FosteringAnnouncementListModelDto>.Create(fosteringAnnouncements, paginationEntity.PageNumber,

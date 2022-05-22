@@ -2,7 +2,7 @@
 {
     public enum AnimalSize
     {
-        EXTRA_SMALL,
+        EXTRA_SMALL = 1,
         SMALL,
         MEDIUM,
         LARGE,
