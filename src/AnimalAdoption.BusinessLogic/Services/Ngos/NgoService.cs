@@ -170,6 +170,8 @@ namespace AnimalAdoption.BusinessLogic.Services.Ngos
                     announcement.County = _mapper.Map<CountyDto>(ngo.NgoAddress.County);
                     announcement.City = _mapper.Map<CityDto>(ngo.NgoAddress.City);
                     announcement.Street = ngo.NgoAddress.Street;
+                    announcement.StartDate = DateTime.Parse(announcement.StartDate).ToString("dd.MM.yyyy");
+                    announcement.EndDate = DateTime.Parse(announcement.EndDate).ToString("dd.MM.yyyy");
                     var ann = ngo.FosteringAnnouncements.FirstOrDefault(x => x.Id == announcement.Id);
                     var req = ann.FosteringRequests.FirstOrDefault(x => x.Username == username);
                     if (req is not null) announcement.HasRequest = true;

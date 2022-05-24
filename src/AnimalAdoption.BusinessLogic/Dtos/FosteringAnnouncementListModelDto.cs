@@ -11,8 +11,8 @@ namespace AnimalAdoption.BusinessLogic.Dtos
         public string Description { get; set; }
         public AnimalType AnimalType { get; set; }
         public AnimalSize AnimalSize { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
+        public string StartDate { get; set; }
+        public string EndDate { get; set; }
         public CountyDto County { get; set; }
         public CityDto City { get; set; }
         public string Street { get; set; }
