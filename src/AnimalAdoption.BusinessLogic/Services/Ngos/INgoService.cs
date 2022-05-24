@@ -23,6 +23,7 @@ namespace AnimalAdoption.BusinessLogic.Services.Ngos
         Task<FosteringRequestListModelDto> UpdateFosteringRequest(FosteringRequestListModelDto fosteringRequest);
         Task<UserAdoptionRequestDto> GetUserAdoptionRequest(int announcementId, string username);
         Task<UserFosteringRequestDto> GetUserFosteringRequest(int announcementId, string username);
+        Task<StatisticsDto> GetStatistics(string username);
 
     }
 }

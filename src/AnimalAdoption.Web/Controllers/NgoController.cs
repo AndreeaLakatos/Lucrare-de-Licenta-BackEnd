@@ -140,5 +140,11 @@ namespace AnimalAdoption.Web.Controllers
         {
             return Ok(await _ngoService.GetUserFosteringRequest(announcementId, username));
         }
+
+        [HttpGet("statistics/{username}")]
+        public async Task<IActionResult> GetUserStatistics(string username)
+        {
+            return Ok(await _ngoService.GetStatistics(username));
+        }
     }
 }

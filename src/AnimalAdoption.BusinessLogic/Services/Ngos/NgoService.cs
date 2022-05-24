@@ -476,5 +476,36 @@ namespace AnimalAdoption.BusinessLogic.Services.Ngos
                 })
                 .FirstOrDefaultAsync();
         }
+
+        public async Task<StatisticsDto> GetStatistics(string username)
+        {
+            var ngo = await _dbContext.Ngos
+                .Include(x => x.AdoptionAnnouncements).ThenInclude(x => x.AdoptionRequests)
+                .Include(x => x.FosteringAnnouncements).ThenInclude(x => x.FosteringRequests)
+                .FirstOrDefaultAsync(x => x.UserName == username);
+            var adoptionAnnouncements = ngo.AdoptionAnnouncements;
+            var adoptionRequests = adoptionAnnouncements.SelectMany(x => x.AdoptionRequests).ToList();
+            var fosteringAnnouncements = ngo.FosteringAnnouncements;
+            var fosteringnRequests = fosteringAnnouncements.SelectMany(x => x.FosteringRequests).ToList();
+            return new StatisticsDto
+            {
+                AdoptionAnnouncementsCount = adoptionAnnouncements.Count,
+                ActiveAdoptionAnnouncements = adoptionAnnouncements.Where(x => !x.Status).Count(),
+                ClosedAdoptionAnnouncements = adoptionAnnouncements.Where((x) => x.Status).Count(),
+                AdoptionRequestsNumber = adoptionAnnouncements.Select(x => x.AdoptionRequests).Count(),
+                AdoptionAverage = adoptionAnnouncements.Select(x => x.AdoptionRequests).Count() / adoptionAnnouncements.Count,
+                FosteringAnnouncementsCount = fosteringAnnouncements.Count,
+                ActiveFosteringAnnouncements = fosteringAnnouncements.Where(x => !x.Status).Count(),
+                ClosedFosteringAnnouncements= fosteringAnnouncements.Where(x => x.Status).Count(),
+                FosteringRequestsNumber = fosteringAnnouncements.Select(x => x.FosteringRequests).Count(),
+                FosteringAverage = fosteringAnnouncements.Select(x => x.FosteringRequests).Count() / fosteringAnnouncements.Count,
+                AdoptionUsersNo = adoptionRequests.Select(x => x.Username).Distinct().Count(),
+                AcceptedAdoptionRequests = adoptionRequests.Where(x => x.Status).Count(),
+                RejectedAdoptionRequests = adoptionRequests.Where(x => !x.Status && x.Reviewed).Count(),
+                FosteringUsersNo = fosteringnRequests.Select(x => x.Username).Distinct().Count(),
+                AcceptedFosteringRequests = fosteringnRequests.Where(x => x.Status).Count(),
+                RejectedFosteringRequests = fosteringnRequests.Where(x => !x.Status && x.Reviewed).Count()
+            };
+        }
     }
 }
