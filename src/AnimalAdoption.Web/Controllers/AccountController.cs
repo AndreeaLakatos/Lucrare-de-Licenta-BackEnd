@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using AnimalAdoption.BusinessLogic.Dtos;
+using AnimalAdoption.BusinessLogic.Exceptions;
 using AnimalAdoption.Data.Entities;
 using AnimalAdoption.Web.Controllers.Base;
 using AnimalAdoption.Web.Dtos.UserDtos;
@@ -37,7 +38,7 @@ namespace AnimalAdoption.Web.Controllers
             var token = await _tokenService.CreateToken(loginUserDto);
 
             if (string.IsNullOrEmpty(token))
-                throw new Exception("Wrong username or password!");
+                throw new UserValidationException(ErrorCode.InvalidUsernameOrPassword, "Invalid username or password!");
 
             return new LoggedInUserDto
             {

@@ -8,15 +8,6 @@ namespace AnimalAdoption.Web.Extensions
 {
     public static class HttpExtensions
     {
-        // public static void AddPaginationHeader(this HttpResponse response, PaginationMetaData paginationMetaData)
-        // {
-        //     var options = new JsonSerializerOptions
-        //     {
-        //         PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-        //     };
-        //     response.Headers.Add("X-Pagination", JsonSerializer.Serialize(paginationMetaData, options));
-        // }
-
         public static async Task AddErrorMessage(this HttpResponse response, int statusCode, string errorMessage, string errorStack)
         {
             var options = new JsonSerializerOptions

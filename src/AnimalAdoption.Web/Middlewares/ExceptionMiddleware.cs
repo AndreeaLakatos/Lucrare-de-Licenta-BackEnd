@@ -19,7 +19,6 @@ namespace AnimalAdoption.Web.Middlewares
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.InnerException.Message);
                 await HandleExceptionAsync(context, e);
             }
         }

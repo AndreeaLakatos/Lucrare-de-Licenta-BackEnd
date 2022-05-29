@@ -96,6 +96,10 @@ namespace AnimalAdoption.Web.Services.Account
                 throw new UserValidationException(ErrorCode.UserAlreadyExist, "This user already exist!");
             }
 
+            userExists = await _userManager.FindByEmailAsync(registerUserDto.Email);
+            if (userExists != null)
+                throw new UserValidationException(ErrorCode.UserAlreadyExist, "This user already exist!");
+
             var county = await _dbContext.Counties.FirstOrDefaultAsync(county => county.Id == registerUserDto.County.Id);
             var city = await _dbContext.Cities.FirstOrDefaultAsync(city => city.Id == registerUserDto.City.Id);
             var address = new Address
@@ -125,7 +129,7 @@ namespace AnimalAdoption.Web.Services.Account
             var result = await _userManager.CreateAsync(user, registerUserDto.Password);
             if (!result.Succeeded)
             {
-                throw new Exception("BasicUsers registration fails!");
+                throw new UserValidationException(ErrorCode.UserAlreadyExist, "This user already exist!");
             }
 
             await _userManager.AddToRoleAsync(user, "BasicUser");
