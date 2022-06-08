@@ -32,8 +32,8 @@ namespace AnimalAdoption.Web.Services.Token
 
             var us = await _userManager.FindByNameAsync(user.Username);
             var token = new JwtSecurityToken(
-                issuer: _configuration["JWT:ValidIssuer"],
-                audience: _configuration["JWT:ValidAudience"],
+                //issuer: _configuration["JWT:ValidIssuer"],
+               // audience: _configuration["JWT:ValidAudience"],
                 expires: DateTime.Now.AddHours(24),
                 claims: await GetAuthClaims(us),
                 signingCredentials: new SigningCredentials(CreateAuthSingingKey(), SecurityAlgorithms.HmacSha256)

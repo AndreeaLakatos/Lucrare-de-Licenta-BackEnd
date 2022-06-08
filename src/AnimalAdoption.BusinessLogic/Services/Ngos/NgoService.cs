@@ -370,7 +370,8 @@ namespace AnimalAdoption.BusinessLogic.Services.Ngos
                     {
                         var notification = new Notification
                         {
-                            Text = "Cererea cu numarul #" + request.Id + "pentru anuntul  #" + adoptionRequest.AdoptionAnnouncementId + " a fost acceptata, vei fi contactat telefonic de catre membrii asociatiei!!",
+                            Text = "Cererea cu numarul #" + request.Id + "pentru anuntul  #" + adoptionRequest.AdoptionAnnouncementId +
+                            " a fost acceptata, vei fi contactat telefonic de catre membrii asociatiei!!",
                             Date = DateTime.Now.Date.ToString("dd.MM.yyyy"),
                             Hour = DateTime.Now.TimeOfDay.ToString()
                         };
