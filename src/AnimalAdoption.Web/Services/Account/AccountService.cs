@@ -59,7 +59,7 @@ namespace AnimalAdoption.Web.Services.Account
 
             if (!(await _dbContext.SaveChangesAsync() > 0))
             {
-                throw new AddException(ErrorCode.AddUserPreferencesException, "Invalid user preferences!");
+                throw new AnnouncementValidationException(ErrorCode.AddUserPreferencesException, "Invalid user preferences!");
             }
 
             var user = new Ngo
@@ -112,7 +112,7 @@ namespace AnimalAdoption.Web.Services.Account
 
             if (!(await _dbContext.SaveChangesAsync() > 0))
             {
-                throw new AddException(ErrorCode.AddUserPreferencesException, "Invalid user preferences!");
+                throw new AnnouncementValidationException(ErrorCode.AddUserPreferencesException, "Invalid user preferences!");
             }
 
             var user = new User
@@ -174,8 +174,7 @@ namespace AnimalAdoption.Web.Services.Account
         public async Task<UserPreferencesDto> GetUserPreferences(string username)
         {
             var user = await _dbContext.AppUsers.Include(x => x.UserPreferences).FirstOrDefaultAsync(user => user.UserName == username);
-            var x =  _mapper.Map<UserPreferencesDto>(user.UserPreferences);
-            return x;
+            return _mapper.Map<UserPreferencesDto>(user.UserPreferences);
         }
 
         public async Task<UserDetailsDto> GetUserDetails(string username)
@@ -220,7 +219,7 @@ namespace AnimalAdoption.Web.Services.Account
 
             if (!(await _dbContext.SaveChangesAsync() > 0))
             {
-                throw new AddException(ErrorCode.AddUserPreferencesException, "Invalid user preferences!");
+                throw new AnnouncementValidationException(ErrorCode.AddUserPreferencesException, "Invalid user preferences!");
             }
 
             return new UserDetailsDto
@@ -244,7 +243,7 @@ namespace AnimalAdoption.Web.Services.Account
                 _dbContext.UserPreferencess.Add(userPref.UserPreferences);
             if (!(await _dbContext.SaveChangesAsync() > 0))
             {
-                throw new AddException(ErrorCode.AddUserPreferencesException, "Invalid user preferences!");
+                throw new AnnouncementValidationException(ErrorCode.AddUserPreferencesException, "Invalid user preferences!");
             }
             return userPreferences;
 
@@ -288,7 +287,7 @@ namespace AnimalAdoption.Web.Services.Account
 
             if (!(await _dbContext.SaveChangesAsync() > 0))
             {
-                throw new AddException(ErrorCode.AddUserPreferencesException, "Invalid user preferences!");
+                throw new AnnouncementValidationException(ErrorCode.AddUserPreferencesException, "Invalid user preferences!");
             }
 
             return ngoDetailsDto;

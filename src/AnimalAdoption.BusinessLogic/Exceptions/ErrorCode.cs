@@ -9,6 +9,7 @@
         InvalidUsernameOrPassword,
         AddAnimalFailed,
         InvalidEmailAddress,
-        InvalidPassword
+        InvalidPassword,
+        AnnouncementWithRequests
     }
 }

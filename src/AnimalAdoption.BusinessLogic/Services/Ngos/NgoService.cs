@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AnimalAdoption.BusinessLogic.Dtos;
+using AnimalAdoption.BusinessLogic.Exceptions;
 using AnimalAdoption.BusinessLogic.Helpers.PagedList;
 using AnimalAdoption.Data.Entities;
 using AutoMapper;
@@ -98,6 +99,7 @@ namespace AnimalAdoption.BusinessLogic.Services.Ngos
                 var sizes = paginationEntity.Sizes.Split(',').ToList();
                 adoptionAnnouncements = adoptionAnnouncements.Where(x => sizes.Contains(x.AnimalSize.ToString())).ToList();
             }
+
             if (!string.IsNullOrWhiteSpace(paginationEntity.Others))
             {
                 var others = paginationEntity.Others.Split(',').ToList();
@@ -105,7 +107,23 @@ namespace AnimalAdoption.BusinessLogic.Services.Ngos
                     adoptionAnnouncements = adoptionAnnouncements.Where(x => x.HasRequest).ToList();
                 if (others.Contains("notRequest"))
                     adoptionAnnouncements = adoptionAnnouncements.Where(x => !x.HasRequest).ToList();
+                if (others.Contains("preferences"))
+                {
+                    var preferences = await _dbContext.AppUsers.Include(x => x.UserPreferences).Where(user => user.UserName == username).Select(x => x.UserPreferences).FirstOrDefaultAsync();
+                    if (preferences != null)
+                    {
+                        if (preferences.AnimalType != null)
+                            adoptionAnnouncements = adoptionAnnouncements.Where(x => x.AnimalType == preferences.AnimalType).ToList();
+                        if (preferences.AnimalSize != null)
+                            adoptionAnnouncements = adoptionAnnouncements.Where(x => x.AnimalSize == preferences.AnimalSize).ToList();
+                        if (preferences.Open != null)
+                            adoptionAnnouncements = adoptionAnnouncements.Where(x => x.Status == !preferences.Open).ToList();
+                        if (preferences.RequestSent != null)
+                            adoptionAnnouncements = adoptionAnnouncements.Where(x => x.HasRequest == preferences.RequestSent).ToList();
+                    }     
+                }
             }
+
             if (!string.IsNullOrWhiteSpace(paginationEntity.Status))
             {
                 var status = paginationEntity.Status.Split(',').ToList();
@@ -223,7 +241,9 @@ namespace AnimalAdoption.BusinessLogic.Services.Ngos
             var ngo = await _dbContext.Ngos
                 .Include(x => x.AdoptionAnnouncements).ThenInclude(x => x.Photos)
                 .FirstOrDefaultAsync(x => x.UserName == username);
-            var announcement = await _dbContext.AdoptionAnnouncements.FirstOrDefaultAsync(x => x.Id == adoptionAnnouncementId);
+            var announcement = await _dbContext.AdoptionAnnouncements.Include(x => x.AdoptionRequests).FirstOrDefaultAsync(x => x.Id == adoptionAnnouncementId);
+            if (announcement.AdoptionRequests.Count != 0)
+                throw new AnnouncementValidationException(ErrorCode.AnnouncementWithRequests, "You can not delete this announcement because already has requests!");
             _dbContext.Photos.RemoveRange(announcement.Photos);
             ngo.AdoptionAnnouncements.Remove(announcement);
             await _dbContext.SaveChangesAsync();
@@ -235,7 +255,10 @@ namespace AnimalAdoption.BusinessLogic.Services.Ngos
             var ngo = await _dbContext.Ngos
                 .Include(x => x.FosteringAnnouncements).ThenInclude(x => x.Photos)
                 .FirstOrDefaultAsync(x => x.UserName == username);
-            var announcement = await _dbContext.FosteringAnnouncements.FirstOrDefaultAsync(x => x.Id == fosteringAnnouncementId);
+            var announcement = await _dbContext.FosteringAnnouncements.Include(x => x.FosteringRequests).FirstOrDefaultAsync(x => x.Id == fosteringAnnouncementId);
+            if (announcement.FosteringRequests.Count != 0)
+                throw new AnnouncementValidationException(ErrorCode.AnnouncementWithRequests, "You can not delete this announcement because already has requests!");
+
             _dbContext.Photos.RemoveRange(announcement.Photos);
             ngo.FosteringAnnouncements.Remove(announcement);
             await _dbContext.SaveChangesAsync();
@@ -486,25 +509,25 @@ namespace AnimalAdoption.BusinessLogic.Services.Ngos
             var adoptionAnnouncements = ngo.AdoptionAnnouncements;
             var adoptionRequests = adoptionAnnouncements.SelectMany(x => x.AdoptionRequests).ToList();
             var fosteringAnnouncements = ngo.FosteringAnnouncements;
-            var fosteringnRequests = fosteringAnnouncements.SelectMany(x => x.FosteringRequests).ToList();
+            var fosteringRequests = fosteringAnnouncements.SelectMany(x => x.FosteringRequests).ToList();
             return new StatisticsDto
             {
                 AdoptionAnnouncementsCount = adoptionAnnouncements.Count,
                 ActiveAdoptionAnnouncements = adoptionAnnouncements.Where(x => !x.Status).Count(),
                 ClosedAdoptionAnnouncements = adoptionAnnouncements.Where((x) => x.Status).Count(),
-                AdoptionRequestsNumber = adoptionAnnouncements.Select(x => x.AdoptionRequests).Count(),
-                AdoptionAverage = adoptionAnnouncements.Select(x => x.AdoptionRequests).Count() / adoptionAnnouncements.Count,
+                AdoptionRequestsNumber = adoptionRequests.Count,
+                AdoptionAverage = adoptionRequests.Count / adoptionAnnouncements.Count,
                 FosteringAnnouncementsCount = fosteringAnnouncements.Count,
                 ActiveFosteringAnnouncements = fosteringAnnouncements.Where(x => !x.Status).Count(),
                 ClosedFosteringAnnouncements= fosteringAnnouncements.Where(x => x.Status).Count(),
-                FosteringRequestsNumber = fosteringAnnouncements.Select(x => x.FosteringRequests).Count(),
-                FosteringAverage = fosteringAnnouncements.Select(x => x.FosteringRequests).Count() / fosteringAnnouncements.Count,
+                FosteringRequestsNumber = fosteringRequests.Count,
+                FosteringAverage = fosteringRequests.Count / fosteringAnnouncements.Count,
                 AdoptionUsersNo = adoptionRequests.Select(x => x.Username).Distinct().Count(),
                 AcceptedAdoptionRequests = adoptionRequests.Where(x => x.Status).Count(),
                 RejectedAdoptionRequests = adoptionRequests.Where(x => !x.Status && x.Reviewed).Count(),
-                FosteringUsersNo = fosteringnRequests.Select(x => x.Username).Distinct().Count(),
-                AcceptedFosteringRequests = fosteringnRequests.Where(x => x.Status).Count(),
-                RejectedFosteringRequests = fosteringnRequests.Where(x => !x.Status && x.Reviewed).Count()
+                FosteringUsersNo = fosteringRequests.Select(x => x.Username).Distinct().Count(),
+                AcceptedFosteringRequests = fosteringRequests.Where(x => x.Status).Count(),
+                RejectedFosteringRequests = fosteringRequests.Where(x => !x.Status && x.Reviewed).Count()
             };
         }
     }
