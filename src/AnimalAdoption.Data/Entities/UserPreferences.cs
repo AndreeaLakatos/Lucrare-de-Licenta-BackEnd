@@ -3,9 +3,8 @@
     public class UserPreferences
     {
         public int Id { get; set; }
-        public bool HasFamily { get; set; }
-        public bool HasChildren { get; set; }
-        public string LivingPlace { get; set; }
+        public bool Open { get; set; }
+        public bool RequestSent { get; set; }
         public AnimalSize AnimalSize { get; set; }
         public AnimalType AnimalType { get; set; }
     }

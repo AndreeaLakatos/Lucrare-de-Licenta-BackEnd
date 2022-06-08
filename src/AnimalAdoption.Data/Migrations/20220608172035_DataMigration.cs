@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace AnimalAdoption.Data.Migrations
 {
-    public partial class V1 : Migration
+    public partial class DataMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -40,9 +40,8 @@ namespace AnimalAdoption.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    HasFamily = table.Column<bool>(type: "bit", nullable: false),
-                    HasChildren = table.Column<bool>(type: "bit", nullable: false),
-                    LivingPlace = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Open = table.Column<bool>(type: "bit", nullable: false),
+                    RequestSent = table.Column<bool>(type: "bit", nullable: false),
                     AnimalSize = table.Column<int>(type: "int", nullable: false),
                     AnimalType = table.Column<int>(type: "int", nullable: false)
                 },
@@ -182,6 +181,8 @@ namespace AnimalAdoption.Data.Migrations
                     AnimalType = table.Column<int>(type: "int", nullable: false),
                     AnimalSize = table.Column<int>(type: "int", nullable: false),
                     MoreDetails = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Status = table.Column<bool>(type: "bit", nullable: false),
+                    FromDate = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     NgoId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
@@ -189,28 +190,6 @@ namespace AnimalAdoption.Data.Migrations
                     table.PrimaryKey("PK_AdoptionAnnouncements", x => x.Id);
                     table.ForeignKey(
                         name: "FK_AdoptionAnnouncements_AspNetUsers_NgoId",
-                        column: x => x.NgoId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Animals",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    BirthDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    AnimalType = table.Column<int>(type: "int", nullable: false),
-                    AnimalSize = table.Column<int>(type: "int", nullable: false),
-                    NgoId = table.Column<string>(type: "nvarchar(450)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Animals", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Animals_AspNetUsers_NgoId",
                         column: x => x.NgoId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -303,67 +282,145 @@ namespace AnimalAdoption.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Images",
+                name: "FosteringAnnouncements",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AnimalType = table.Column<int>(type: "int", nullable: false),
+                    AnimalSize = table.Column<int>(type: "int", nullable: false),
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    MoreDetails = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Status = table.Column<bool>(type: "bit", nullable: false),
+                    FromDate = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NgoId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FosteringAnnouncements", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_FosteringAnnouncements_AspNetUsers_NgoId",
+                        column: x => x.NgoId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Notifications",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Text = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Date = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Hour = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    BasicUserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Notifications", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Notifications_AspNetUsers_BasicUserId",
+                        column: x => x.BasicUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AdoptionRequests",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Reason = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AvailableDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Status = table.Column<bool>(type: "bit", nullable: false),
+                    SomethingElse = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Reviewed = table.Column<bool>(type: "bit", nullable: false),
+                    Username = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FromDate = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AdoptionAnnouncementId = table.Column<int>(type: "int", nullable: true),
+                    BasicUserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AdoptionRequests", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AdoptionRequests_AdoptionAnnouncements_AdoptionAnnouncementId",
+                        column: x => x.AdoptionAnnouncementId,
+                        principalTable: "AdoptionAnnouncements",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_AdoptionRequests_AspNetUsers_BasicUserId",
+                        column: x => x.BasicUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "FosteringRequests",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Reason = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AvailableDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Status = table.Column<bool>(type: "bit", nullable: false),
+                    SomethingElse = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Reviewed = table.Column<bool>(type: "bit", nullable: false),
+                    Username = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FromDate = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    BasicUserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    FosteringAnnouncementId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FosteringRequests", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_FosteringRequests_AspNetUsers_BasicUserId",
+                        column: x => x.BasicUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_FosteringRequests_FosteringAnnouncements_FosteringAnnouncementId",
+                        column: x => x.FosteringAnnouncementId,
+                        principalTable: "FosteringAnnouncements",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Photos",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     PublicId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Url = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    AdoptionAnnouncementId = table.Column<int>(type: "int", nullable: true)
+                    AdoptionAnnouncementId = table.Column<int>(type: "int", nullable: true),
+                    FosteringAnnouncementId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Images", x => x.Id);
+                    table.PrimaryKey("PK_Photos", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Images_AdoptionAnnouncements_AdoptionAnnouncementId",
+                        name: "FK_Photos_AdoptionAnnouncements_AdoptionAnnouncementId",
                         column: x => x.AdoptionAnnouncementId,
                         principalTable: "AdoptionAnnouncements",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Advertisements",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    AnimalId = table.Column<int>(type: "int", nullable: true),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Location = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Advertisements", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Advertisements_Animals_AnimalId",
-                        column: x => x.AnimalId,
-                        principalTable: "Animals",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "FosterApplications",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsAdopted = table.Column<bool>(type: "bit", nullable: false),
-                    AdvertisementId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_FosterApplications", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_FosterApplications_Advertisements_AdvertisementId",
-                        column: x => x.AdvertisementId,
-                        principalTable: "Advertisements",
+                        name: "FK_Photos_FosteringAnnouncements_FosteringAnnouncementId",
+                        column: x => x.FosteringAnnouncementId,
+                        principalTable: "FosteringAnnouncements",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -371,12 +428,12 @@ namespace AnimalAdoption.Data.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "27dd6f7c-efab-43ed-9e42-4f2131f68896", "852490e4-2c00-401a-ba6a-0a5aa97f076a", "BasicUser", "BASICUSER" });
+                values: new object[] { "c018949e-1fc3-44e4-93d0-2abe2d74cd14", "85f17b0e-bdaa-492b-adb2-b91638e4f421", "BasicUser", "BASICUSER" });
 
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "2d8323c9-c336-41bc-8dd6-464a647841d4", "10a71d9a-5543-47cb-ab06-7281cf260777", "Ngo", "NGO" });
+                values: new object[] { "736fe42e-a761-42a5-a963-670608f8d1b3", "ae996565-664b-4ef1-8ac3-f7f3be9cda22", "Ngo", "NGO" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Addresses_CityId",
@@ -394,14 +451,14 @@ namespace AnimalAdoption.Data.Migrations
                 column: "NgoId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Advertisements_AnimalId",
-                table: "Advertisements",
-                column: "AnimalId");
+                name: "IX_AdoptionRequests_AdoptionAnnouncementId",
+                table: "AdoptionRequests",
+                column: "AdoptionAnnouncementId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Animals_NgoId",
-                table: "Animals",
-                column: "NgoId");
+                name: "IX_AdoptionRequests_BasicUserId",
+                table: "AdoptionRequests",
+                column: "BasicUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -463,18 +520,41 @@ namespace AnimalAdoption.Data.Migrations
                 column: "CountyId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_FosterApplications_AdvertisementId",
-                table: "FosterApplications",
-                column: "AdvertisementId");
+                name: "IX_FosteringAnnouncements_NgoId",
+                table: "FosteringAnnouncements",
+                column: "NgoId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Images_AdoptionAnnouncementId",
-                table: "Images",
+                name: "IX_FosteringRequests_BasicUserId",
+                table: "FosteringRequests",
+                column: "BasicUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FosteringRequests_FosteringAnnouncementId",
+                table: "FosteringRequests",
+                column: "FosteringAnnouncementId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Notifications_BasicUserId",
+                table: "Notifications",
+                column: "BasicUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Photos_AdoptionAnnouncementId",
+                table: "Photos",
                 column: "AdoptionAnnouncementId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Photos_FosteringAnnouncementId",
+                table: "Photos",
+                column: "FosteringAnnouncementId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "AdoptionRequests");
+
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
@@ -491,22 +571,22 @@ namespace AnimalAdoption.Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "FosterApplications");
+                name: "FosteringRequests");
 
             migrationBuilder.DropTable(
-                name: "Images");
+                name: "Notifications");
+
+            migrationBuilder.DropTable(
+                name: "Photos");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "Advertisements");
-
-            migrationBuilder.DropTable(
                 name: "AdoptionAnnouncements");
 
             migrationBuilder.DropTable(
-                name: "Animals");
+                name: "FosteringAnnouncements");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

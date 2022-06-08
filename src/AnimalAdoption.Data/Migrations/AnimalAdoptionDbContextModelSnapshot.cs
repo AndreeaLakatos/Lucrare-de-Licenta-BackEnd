@@ -396,14 +396,11 @@ namespace AnimalAdoption.Data.Migrations
                     b.Property<int>("AnimalType")
                         .HasColumnType("int");
 
-                    b.Property<bool>("HasChildren")
+                    b.Property<bool>("Open")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("HasFamily")
+                    b.Property<bool>("RequestSent")
                         .HasColumnType("bit");
-
-                    b.Property<string>("LivingPlace")
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -439,15 +436,15 @@ namespace AnimalAdoption.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "0d45f3b4-78c1-415f-840c-78850dc5ee8b",
-                            ConcurrencyStamp = "31daae7f-1e8e-45b1-8a83-960521e1849d",
+                            Id = "c018949e-1fc3-44e4-93d0-2abe2d74cd14",
+                            ConcurrencyStamp = "85f17b0e-bdaa-492b-adb2-b91638e4f421",
                             Name = "BasicUser",
                             NormalizedName = "BASICUSER"
                         },
                         new
                         {
-                            Id = "451a4914-4eec-4250-988e-6cfb066320bd",
-                            ConcurrencyStamp = "cf2612a7-fc7f-4008-8dd4-e0f9747b864f",
+                            Id = "736fe42e-a761-42a5-a963-670608f8d1b3",
+                            ConcurrencyStamp = "ae996565-664b-4ef1-8ac3-f7f3be9cda22",
                             Name = "Ngo",
                             NormalizedName = "NGO"
                         });

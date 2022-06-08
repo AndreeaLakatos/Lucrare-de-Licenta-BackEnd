@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AnimalAdoption.Data.Migrations
 {
     [DbContext(typeof(AnimalAdoptionDbContext))]
-    [Migration("20220515125441_V13")]
-    partial class V13
+    [Migration("20220608172035_DataMigration")]
+    partial class DataMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -62,6 +62,9 @@ namespace AnimalAdoption.Data.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("FromDate")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("MoreDetails")
                         .HasColumnType("nvarchar(max)");
 
@@ -96,6 +99,9 @@ namespace AnimalAdoption.Data.Migrations
 
                     b.Property<string>("BasicUserId")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("FromDate")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Reason")
                         .HasColumnType("nvarchar(max)");
@@ -257,6 +263,9 @@ namespace AnimalAdoption.Data.Migrations
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("FromDate")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("MoreDetails")
                         .HasColumnType("nvarchar(max)");
 
@@ -294,6 +303,9 @@ namespace AnimalAdoption.Data.Migrations
 
                     b.Property<int?>("FosteringAnnouncementId")
                         .HasColumnType("int");
+
+                    b.Property<string>("FromDate")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Reason")
                         .HasColumnType("nvarchar(max)");
@@ -386,14 +398,11 @@ namespace AnimalAdoption.Data.Migrations
                     b.Property<int>("AnimalType")
                         .HasColumnType("int");
 
-                    b.Property<bool>("HasChildren")
+                    b.Property<bool>("Open")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("HasFamily")
+                    b.Property<bool>("RequestSent")
                         .HasColumnType("bit");
-
-                    b.Property<string>("LivingPlace")
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -429,15 +438,15 @@ namespace AnimalAdoption.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "65629139-3935-419c-ba99-5fa65861a79e",
-                            ConcurrencyStamp = "f498b6d3-b897-4c92-b0c6-233188977726",
+                            Id = "c018949e-1fc3-44e4-93d0-2abe2d74cd14",
+                            ConcurrencyStamp = "85f17b0e-bdaa-492b-adb2-b91638e4f421",
                             Name = "BasicUser",
                             NormalizedName = "BASICUSER"
                         },
                         new
                         {
-                            Id = "e4661ad4-b57d-451e-8c1a-eb40175ba557",
-                            ConcurrencyStamp = "1e75be16-d1b8-4818-bf2c-e84d79526355",
+                            Id = "736fe42e-a761-42a5-a963-670608f8d1b3",
+                            ConcurrencyStamp = "ae996565-664b-4ef1-8ac3-f7f3be9cda22",
                             Name = "Ngo",
                             NormalizedName = "NGO"
                         });
