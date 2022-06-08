@@ -376,7 +376,6 @@ namespace AnimalAdoption.BusinessLogic.Services.Ngos
                             Hour = DateTime.Now.TimeOfDay.ToString()
                         };
                         user.Notifications.Add(notification);
-                        request.Reviewed = true;
                     }
                     request.Status = adoptionRequest.Status;
                 }
@@ -390,8 +389,9 @@ namespace AnimalAdoption.BusinessLogic.Services.Ngos
                         Hour = DateTime.Now.TimeOfDay.ToString()
                     };
                     user.Notifications.Add(notification);
-                    request.Reviewed = true;
-                }    
+                    
+                }
+                request.Reviewed = true;
             }
 
             if (adoptionRequest.Status) announcement.Status = true;
@@ -419,7 +419,6 @@ namespace AnimalAdoption.BusinessLogic.Services.Ngos
                             Hour = DateTime.Now.TimeOfDay.ToString()
                         };
                         user.Notifications.Add(notification);
-                        request.Reviewed = true;
                     }
                     request.Status = fosteringRequest.Status;
                 }
@@ -433,8 +432,8 @@ namespace AnimalAdoption.BusinessLogic.Services.Ngos
                         Hour = DateTime.Now.TimeOfDay.ToString()
                     };
                     user.Notifications.Add(notification);
-                    request.Reviewed = true;
                 }
+                request.Reviewed = true;
             }
             if (fosteringRequest.Status) announcement.Status = true;
 
