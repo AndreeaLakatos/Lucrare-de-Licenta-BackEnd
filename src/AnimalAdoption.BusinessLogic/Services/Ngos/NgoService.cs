@@ -393,7 +393,7 @@ namespace AnimalAdoption.BusinessLogic.Services.Ngos
                     {
                         var notification = new Notification
                         {
-                            Text = "Cererea cu numarul #" + request.Id + "pentru anuntul  #" + adoptionRequest.AdoptionAnnouncementId +
+                            Text = "Cererea cu numarul #" + request.Id + " pentru anuntul  #" + adoptionRequest.AdoptionAnnouncementId +
                             " a fost acceptata, vei fi contactat telefonic de catre membrii asociatiei!!",
                             Date = DateTime.Now.Date.ToString("dd.MM.yyyy"),
                             Hour = DateTime.Now.TimeOfDay.ToString()
@@ -407,7 +407,7 @@ namespace AnimalAdoption.BusinessLogic.Services.Ngos
                 {
                     var notification = new Notification
                     {
-                        Text = "Cererea cu numarul #" + request.Id + "pentru anuntul  #" + adoptionRequest.AdoptionAnnouncementId + " a fost refuzata.",
+                        Text = "Cererea cu numarul #" + request.Id + " pentru anuntul  #" + adoptionRequest.AdoptionAnnouncementId + " a fost refuzata.",
                         Date = DateTime.Now.Date.ToString("dd.MM.yyyy"),
                         Hour = DateTime.Now.TimeOfDay.ToString()
                     };
@@ -437,7 +437,7 @@ namespace AnimalAdoption.BusinessLogic.Services.Ngos
                     {
                         var notification = new Notification
                         {
-                            Text = "Cererea cu numarul #" + request.Id + "pentru anuntul  #" + fosteringRequest.FosteringAnnouncementId + " a fost acceptata, vei fi contactat telefonic de catre membrii asociatiei!!",
+                            Text = "Cererea cu numarul #" + request.Id + " pentru anuntul  #" + fosteringRequest.FosteringAnnouncementId + " a fost acceptata, vei fi contactat telefonic de catre membrii asociatiei!!",
                             Date = DateTime.Now.Date.ToString("dd.MM.yyyy"),
                             Hour = DateTime.Now.TimeOfDay.ToString()
                         };
@@ -450,7 +450,7 @@ namespace AnimalAdoption.BusinessLogic.Services.Ngos
                 {
                     var notification = new Notification
                     {
-                        Text = "Cererea cu numarul #" + request.Id + "pentru anuntul  #" + fosteringRequest.FosteringAnnouncementId + " a fost refuzata.",
+                        Text = "Cererea cu numarul #" + request.Id + " pentru anuntul  #" + fosteringRequest.FosteringAnnouncementId + " a fost refuzata.",
                         Date = DateTime.Now.Date.ToString("dd.MM.yyyy"),
                         Hour = DateTime.Now.TimeOfDay.ToString()
                     };
@@ -516,12 +516,12 @@ namespace AnimalAdoption.BusinessLogic.Services.Ngos
                 ActiveAdoptionAnnouncements = adoptionAnnouncements.Where(x => !x.Status).Count(),
                 ClosedAdoptionAnnouncements = adoptionAnnouncements.Where((x) => x.Status).Count(),
                 AdoptionRequestsNumber = adoptionRequests.Count,
-                AdoptionAverage = adoptionRequests.Count / adoptionAnnouncements.Count,
+                AdoptionAverage = adoptionAnnouncements.Count != 0 ? adoptionRequests.Count / adoptionAnnouncements.Count : 0,
                 FosteringAnnouncementsCount = fosteringAnnouncements.Count,
                 ActiveFosteringAnnouncements = fosteringAnnouncements.Where(x => !x.Status).Count(),
                 ClosedFosteringAnnouncements= fosteringAnnouncements.Where(x => x.Status).Count(),
                 FosteringRequestsNumber = fosteringRequests.Count,
-                FosteringAverage = fosteringRequests.Count / fosteringAnnouncements.Count,
+                FosteringAverage = fosteringAnnouncements.Count != 0 ? fosteringRequests.Count / fosteringAnnouncements.Count : 0,
                 AdoptionUsersNo = adoptionRequests.Select(x => x.Username).Distinct().Count(),
                 AcceptedAdoptionRequests = adoptionRequests.Where(x => x.Status).Count(),
                 RejectedAdoptionRequests = adoptionRequests.Where(x => !x.Status && x.Reviewed).Count(),

@@ -10,6 +10,7 @@
         AddAnimalFailed,
         InvalidEmailAddress,
         InvalidPassword,
-        AnnouncementWithRequests
+        AnnouncementWithRequests,
+        UserEmailAlreadyExists
     }
 }

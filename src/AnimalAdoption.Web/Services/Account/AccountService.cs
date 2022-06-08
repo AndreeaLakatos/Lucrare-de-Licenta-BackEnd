@@ -37,6 +37,10 @@ namespace AnimalAdoption.Web.Services.Account
                 throw new UserValidationException(ErrorCode.UserAlreadyExist,"This user already exist!");
             }
 
+            userExists = await _userManager.FindByEmailAsync(registerNgoDto.Email);
+            if (userExists != null)
+                throw new UserValidationException(ErrorCode.UserEmailAlreadyExists, "This user already exist!");
+
             var county = await _dbContext.Counties.FirstOrDefaultAsync(county => county.Id == registerNgoDto.County.Id);
             var city = await _dbContext.Cities.FirstOrDefaultAsync(city => city.Id == registerNgoDto.City.Id);
             var address = new Address
@@ -98,7 +102,7 @@ namespace AnimalAdoption.Web.Services.Account
 
             userExists = await _userManager.FindByEmailAsync(registerUserDto.Email);
             if (userExists != null)
-                throw new UserValidationException(ErrorCode.UserAlreadyExist, "This user already exist!");
+                throw new UserValidationException(ErrorCode.UserEmailAlreadyExists, "This user already exist!");
 
             var county = await _dbContext.Counties.FirstOrDefaultAsync(county => county.Id == registerUserDto.County.Id);
             var city = await _dbContext.Cities.FirstOrDefaultAsync(city => city.Id == registerUserDto.City.Id);
