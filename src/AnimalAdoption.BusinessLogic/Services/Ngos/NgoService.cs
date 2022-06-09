@@ -222,6 +222,21 @@ namespace AnimalAdoption.BusinessLogic.Services.Ngos
                     fosteringAnnouncements = fosteringAnnouncements.Where(x => x.HasRequest).ToList();
                 if (others.Contains("notRequest"))
                     fosteringAnnouncements = fosteringAnnouncements.Where(x => !x.HasRequest).ToList();
+                if (others.Contains("preferences"))
+                {
+                    var preferences = await _dbContext.AppUsers.Include(x => x.UserPreferences).Where(user => user.UserName == username).Select(x => x.UserPreferences).FirstOrDefaultAsync();
+                    if (preferences != null)
+                    {
+                        if (preferences.AnimalType != null)
+                            fosteringAnnouncements = fosteringAnnouncements.Where(x => x.AnimalType == preferences.AnimalType).ToList();
+                        if (preferences.AnimalSize != null)
+                            fosteringAnnouncements = fosteringAnnouncements.Where(x => x.AnimalSize == preferences.AnimalSize).ToList();
+                        if (preferences.Open != null)
+                            fosteringAnnouncements = fosteringAnnouncements.Where(x => x.Status == !preferences.Open).ToList();
+                        if (preferences.RequestSent != null)
+                            fosteringAnnouncements = fosteringAnnouncements.Where(x => x.HasRequest == preferences.RequestSent).ToList();
+                    }
+                }
             }
             if (!string.IsNullOrWhiteSpace(paginationEntity.Status))
             {
@@ -231,6 +246,7 @@ namespace AnimalAdoption.BusinessLogic.Services.Ngos
                 if (status.Contains("inactive"))
                     fosteringAnnouncements = fosteringAnnouncements.Where(x => x.Status).ToList();
             }
+
 
             return PagedEntity<FosteringAnnouncementListModelDto>.Create(fosteringAnnouncements, paginationEntity.PageNumber,
                 paginationEntity.PageSize);
