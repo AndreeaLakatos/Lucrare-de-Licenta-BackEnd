@@ -488,12 +488,12 @@ namespace AnimalAdoption.BusinessLogic.Services.Ngos
                 .Select(x => new UserAdoptionRequestDto
                 {
                     AnnouncementId = x.Id,
-                    Reason = x.AdoptionRequests.First().Reason,
+                    Reason = x.AdoptionRequests.FirstOrDefault(x => x.Username == username).Reason,
                     FromDate = DateTime.Now.Date.ToString("dd.MM.yyyy"),
-                    AvailableDate = x.AdoptionRequests.First().AvailableDate.ToString("dd.MM.yyyy"),
-                    SomethingElse = x.AdoptionRequests.First().SomethingElse,
-                    Reviewed = x.AdoptionRequests.First().Reviewed,
-                    Status = x.AdoptionRequests.First().Status,
+                    AvailableDate = x.AdoptionRequests.FirstOrDefault(x => x.Username == username).AvailableDate.ToString("dd.MM.yyyy"),
+                    SomethingElse = x.AdoptionRequests.FirstOrDefault(x => x.Username == username).SomethingElse,
+                    Reviewed = x.AdoptionRequests.FirstOrDefault(x => x.Username == username).Reviewed,
+                    Status = x.AdoptionRequests.FirstOrDefault(x => x.Username == username).Status,
                 })
                 .FirstOrDefaultAsync();
         }
@@ -506,12 +506,12 @@ namespace AnimalAdoption.BusinessLogic.Services.Ngos
                 .Select(x => new UserFosteringRequestDto
                 {
                     AnnouncementId = x.Id,
-                    Reason = x.FosteringRequests.First().Reason,
+                    Reason = x.FosteringRequests.FirstOrDefault(x => x.Username == username).Reason,
                     FromDate = DateTime.Now.Date.ToString("dd.MM.yyyy"),
-                    AvailableDate = x.FosteringRequests.First().AvailableDate.ToString("dd.MM.yyyy"),
-                    SomethingElse = x.FosteringRequests.First().SomethingElse,
-                    Reviewed = x.FosteringRequests.First().Reviewed,
-                    Status = x.FosteringRequests.First().Status
+                    AvailableDate = x.FosteringRequests.FirstOrDefault(x => x.Username == username).AvailableDate.ToString("dd.MM.yyyy"),
+                    SomethingElse = x.FosteringRequests.FirstOrDefault(x => x.Username == username).SomethingElse,
+                    Reviewed = x.FosteringRequests.FirstOrDefault(x => x.Username == username).Reviewed,
+                    Status = x.FosteringRequests.FirstOrDefault(x => x.Username == username).Status
                 })
                 .FirstOrDefaultAsync();
         }
